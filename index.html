@@ -421,13 +421,21 @@
 
     <script>
         // ===================================================================
-        // CONFIGURAÇÃO DO SUPABASE - CHAVES JÁ INSERIDAS
+        // CONFIGURAÇÃO DO SUPABASE
+        // As chaves foram atualizadas com os novos valores fornecidos.
         // ===================================================================
+        
         const SUPABASE_URL = 'https://kvicjdszoffshipsaysgb.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2aWNqZHN6b2Zmc2lwc2F5c2diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4NTUxNzcsImV4cCI6MjA3MDQzMTE3N30.1ILddi6Qut1lpOjnZbtm2jUa44hP_EJHPWBFAGK8A_g';
+
+        // ATUALIZADO: Usando a nova chave "publicável" que você forneceu.
+        const SUPABASE_ANON_KEY = 'sb_publishable_Bp6h5T1P-gOSYMS6yJR8SA_YYOFQjqJ';
+
+        // ===================================================================
+        // FIM DA CONFIGURAÇÃO
+        // ===================================================================
+
 
         // Inicializa o cliente do Supabase
-        // CORREÇÃO: A variável do cliente foi renomeada para 'supabaseClient' para evitar conflito com o objeto global 'supabase'.
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // Variáveis globais para armazenar os resultados das buscas
