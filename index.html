@@ -438,6 +438,9 @@
         // Inicializa o cliente do Supabase
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
+        // Log de verificação para garantir que o cliente foi inicializado
+        console.log('Supabase client initialized:', supabaseClient ? 'Success' : 'Failed');
+
         // Variáveis globais para armazenar os resultados das buscas
         let candidatosBusca = [];
         let todosOsCandidatos = [];
@@ -517,8 +520,11 @@
                 atualizarEstatisticas();
 
             } catch (error) {
-                console.error('Erro ao cadastrar candidato:', error);
-                const message = error.message.includes('duplicate key') ? 'Telefone ou e-mail já cadastrado.' : 'Erro ao cadastrar candidato.';
+                // Log de erro mais detalhado
+                console.error('Erro detalhado ao cadastrar candidato:', error);
+                const message = error.message.includes('duplicate key') 
+                    ? 'Telefone ou e-mail já cadastrado.' 
+                    : `Erro ao cadastrar candidato: ${error.message}`;
                 mostrarAlerta(message, 'error');
             }
         });
@@ -539,8 +545,9 @@
                 atualizarEstatisticas();
                 carregarVagas();
             } catch (error) {
-                console.error('Erro ao cadastrar vaga:', error);
-                mostrarAlerta('Erro ao cadastrar vaga.', 'error');
+                // Log de erro mais detalhado
+                console.error('Erro detalhado ao cadastrar vaga:', error);
+                mostrarAlerta(`Erro ao cadastrar vaga: ${error.message}`, 'error');
             }
         });
 
