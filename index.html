@@ -343,7 +343,6 @@
                     <div class="form-group"><label for="skills">Habilidades/Palavras-chave</label><input type="text" id="skills" name="skills" placeholder="Ex: motorista, empilhadeira (separar por vírgula)"></div>
                 </div>
                 <div class="form-group"><label for="observacoes">Observações</label><textarea id="observacoes" name="observacoes" placeholder="Informações adicionais..."></textarea></div>
-                
                 <button type="submit" class="btn">Cadastrar Candidato</button>
             </form>
         </div>
@@ -394,7 +393,6 @@
     </div>
 
     <script type="module">
-        // REMOVIDO: Importações do Storage
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy, doc, getDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -413,7 +411,6 @@
         // Inicializa o Firebase e os serviços
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        // REMOVIDO: const storage = getStorage(app);
         
         console.log('Firebase App (v10) - Versão Simplificada - Inicializado com sucesso!');
 
@@ -469,8 +466,6 @@
                 candidatoData.skills = candidatoData.skills ? candidatoData.skills.split(',').map(s => s.trim().toLowerCase()) : [];
                 candidatoData.experiencia_anos = parseInt(candidatoData.experiencia_anos, 10) || 0;
                 candidatoData.data_cadastro = serverTimestamp();
-
-                // LÓGICA DE UPLOAD REMOVIDA
                 
                 const candidatosCollection = collection(db, 'candidatos');
                 await addDoc(candidatosCollection, candidatoData);
@@ -536,7 +531,8 @@
                 select.innerHTML = '<option value="">Erro ao carregar vagas</option>';
             }
         }
-
+        
+        // FUNÇÃO DE BUSCA ATUALIZADA COM LÓGICA DE SCORE
         window.buscarCandidatos = async function() {
             const vagaId = document.getElementById('selectVaga').value;
             if (!vagaId) return mostrarAlerta('Selecione uma vaga primeiro.', 'error');
@@ -545,47 +541,70 @@
             document.getElementById('resultadosBusca').innerHTML = '';
 
             try {
+                // Passo 1: Puxar os detalhes da vaga selecionada
                 const vagaRef = doc(db, 'vagas', vagaId);
                 const vagaDoc = await getDoc(vagaRef);
                 if (!vagaDoc.exists()) throw new Error("Vaga não encontrada!");
                 const vaga = vagaDoc.data();
-
-                const palavrasChaveVaga = vaga.titulo.toLowerCase().split(' ');
                 
+                // Extrai palavras-chave do título da vaga para a busca
+                const palavrasChaveVaga = vaga.titulo.toLowerCase().split(' ').filter(p => p.length > 2);
+
+                // Passo 2: Puxar TODOS os candidatos para analisar no código
                 const candidatosCollection = collection(db, 'candidatos');
-                const q = query(candidatosCollection, 
-                    where('cidade', '==', vaga.cidade),
-                    where('experiencia_anos', '>=', vaga.experiencia_min_anos || 0)
-                );
+                const querySnapshot = await getDocs(candidatosCollection);
                 
-                const querySnapshot = await getDocs(q);
-
                 let candidatosCompativeis = [];
+
+                // Passo 3: Analisar cada candidato e calcular um Score de Compatibilidade
                 querySnapshot.forEach(doc => {
                     const candidato = { id: doc.id, ...doc.data() };
                     let score = 0;
 
-                    if (candidato.cargo_desejado && vaga.titulo.toLowerCase().includes(candidato.cargo_desejado.toLowerCase())) {
+                    // Critério 1: Match de Cidade (Peso: 100 pontos)
+                    if (candidato.cidade && vaga.cidade && candidato.cidade.toLowerCase() === vaga.cidade.toLowerCase()) {
+                        score += 100;
+                    }
+
+                    // Critério 2: Match de Experiência (Peso: 50 pontos)
+                    if ((candidato.experiencia_anos || 0) >= (vaga.experiencia_min_anos || 0)) {
                         score += 50;
                     }
-                    if (candidato.skills && candidato.skills.length > 0) {
-                        const matches = candidato.skills.filter(skill => palavrasChaveVaga.includes(skill));
-                        score += matches.length * 25;
+
+                    // Critério 3: Match de Cargo Desejado (Peso: 200 pontos por match)
+                    if (candidato.cargo_desejado) {
+                        const cargoCandidato = candidato.cargo_desejado.toLowerCase();
+                        // Se o cargo do candidato estiver no título da vaga
+                        if (vaga.titulo.toLowerCase().includes(cargoCandidato)) {
+                            score += 200;
+                        }
                     }
-                    
+
+                    // Critério 4: Match de Habilidades (Skills) (Peso: 150 pontos por skill que bater)
+                    if (candidato.skills && candidato.skills.length > 0) {
+                        candidato.skills.forEach(skill => {
+                            if (palavrasChaveVaga.includes(skill.toLowerCase())) {
+                                score += 150;
+                            }
+                        });
+                    }
+
+                    // Adiciona o candidato à lista apenas se ele tiver alguma pontuação
                     if (score > 0) {
                         candidato.score = score;
                         candidatosCompativeis.push(candidato);
                     }
                 });
 
+                // Passo 4: Ordenar a lista do maior para o menor score
                 candidatosCompativeis.sort((a, b) => b.score - a.score);
-                candidatosBusca = candidatosCompativeis;
+
+                candidatosBusca = candidatosCompativeis; // Armazena para exportação
                 exibirCandidatos(candidatosCompativeis, 'resultadosBusca');
 
             } catch (error) {
                 console.error('Erro na busca:', error);
-                mostrarAlerta('Erro ao buscar. Pode ser necessário criar um índice no Firestore. Verifique o console (F12).', 'error');
+                mostrarAlerta('Ocorreu um erro ao buscar os candidatos.', 'error');
             } finally {
                 document.getElementById('loadingBusca').style.display = 'none';
             }
@@ -612,7 +631,7 @@
             const container = document.getElementById(containerId);
             container.innerHTML = ''; 
             if (candidatos.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding: 20px;">Nenhum candidato encontrado.</p>';
+                container.innerHTML = '<p style="text-align:center; padding: 20px;">Nenhum candidato compatível encontrado.</p>';
                 return;
             }
             container.innerHTML = candidatos.map(c => `
@@ -629,7 +648,7 @@
                     </div>
                     <div>
                         <button onclick="verDetalhes(event, '${c.id}')" class="btn btn-secondary">Ver Detalhes</button>
-                        </div>
+                    </div>
                 </div>
             `).join('');
         }
@@ -673,7 +692,7 @@
                         <p><strong>Habilidades:</strong> ${data.skills ? data.skills.join(', ') : 'N/A'}</p>
                         <p><strong>Observações:</strong> ${data.observacoes || 'N/A'}</p>
                         <p><strong>Cadastrado em:</strong> ${dataCadastro}</p>
-                        `;
+                    `;
                     document.getElementById('modalCandidato').classList.add('show');
                 } else {
                     throw new Error("Candidato não encontrado");
