@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banco de Talentos PUZIO</title>
-    <!-- Carrega a biblioteca oficial do Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* Estilos gerais e de layout */
         * {
@@ -340,7 +338,6 @@
 
         <div id="alert-container"></div>
 
-        <!-- Aba: Cadastrar Candidato -->
         <div id="candidatos" class="tab-content active">
             <h2>Cadastrar Novo Candidato</h2>
             <form id="formCandidato">
@@ -370,7 +367,6 @@
             </form>
         </div>
 
-        <!-- Aba: Cadastrar Vaga -->
         <div id="vagas" class="tab-content">
             <h2>Cadastrar Nova Vaga</h2>
             <form id="formVaga">
@@ -388,7 +384,6 @@
             </form>
         </div>
 
-        <!-- Aba: Buscar por Vaga -->
         <div id="buscar" class="tab-content">
             <h2>Buscar Candidatos por Vaga</h2>
             <div class="form-group"><label for="selectVaga">Selecione uma Vaga</label><select id="selectVaga"><option value="">Carregando vagas...</option></select></div>
@@ -398,7 +393,6 @@
             <div id="resultadosBusca"></div>
         </div>
 
-        <!-- Aba: Todos os Candidatos -->
         <div id="resultados" class="tab-content">
             <h2>Todos os Candidatos</h2>
             <div class="form-row">
@@ -411,7 +405,6 @@
         </div>
     </div>
 
-    <!-- Modal para visualizar candidato -->
     <div id="modalCandidato" class="modal">
         <div class="modal-content">
             <span class="close" onclick="fecharModal()">&times;</span>
@@ -419,163 +412,158 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // Importações principais do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, getCount, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
         // ===================================================================
-        // CONFIGURAÇÃO DO SUPABASE
-        // As chaves foram atualizadas com os novos valores fornecidos.
+        // CONFIGURAÇÃO DO FIREBASE
+        // Cole aqui o objeto que você copiou do console do Firebase
         // ===================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlW0GeM48yYKHSYuDLATjNfSw-XtUVbRI",
+            authDomain: "puzio-banco-talentos.firebaseapp.com",
+            projectId: "puzio-banco-talentos",
+            storageBucket: "puzio-banco-talentos.appspot.com", // Confirme no seu console se o final é .appspot.com
+            messagingSenderId: "27472220237",
+            appId: "1:27472220237:web:22de13fdc6aea6b8ef8c04"
+        };
+
+        // Inicializa o Firebase e os serviços
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
         
-        const SUPABASE_URL = 'https://kvicjdszoffshipsaysgb.supabase.co';
-
-        // ATUALIZADO: Usando a nova chave "publicável" que você forneceu.
-        const SUPABASE_ANON_KEY = 'sb_publishable_Bp6h5T1P-gOSYMS6yJR8SA_YYOFQjqJ';
-
-        // ===================================================================
-        // FIM DA CONFIGURAÇÃO
-        // ===================================================================
-
-
-        // Inicializa o cliente do Supabase
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        // Log de verificação para garantir que o cliente foi inicializado
-        console.log('Supabase client initialized:', supabaseClient ? 'Success' : 'Failed');
+        console.log('Firebase App (v10) inicializado com sucesso!');
 
         // Variáveis globais para armazenar os resultados das buscas
         let candidatosBusca = [];
         let todosOsCandidatos = [];
 
         // ===================================================================
-        // FUNÇÕES UTILITÁRIAS
+        // FUNÇÕES UTILITÁRIAS (NÃO PRECISAM DE ALTERAÇÃO)
         // ===================================================================
-
-        // Função para exibir alertas dinâmicos na tela
         function mostrarAlerta(mensagem, tipo = 'success') {
             const container = document.getElementById('alert-container');
-            if (!container) { // Adiciona o container se não existir
-                const alertContainer = document.createElement('div');
-                alertContainer.id = 'alert-container';
-                document.body.appendChild(alertContainer);
-            }
-            
             const alerta = document.createElement('div');
             alerta.className = `alert alert-${tipo}`;
             alerta.textContent = mensagem;
-            
-            document.getElementById('alert-container').appendChild(alerta);
+            container.appendChild(alerta);
             setTimeout(() => alerta.classList.add('show'), 10);
-
             setTimeout(() => {
                 alerta.classList.remove('show');
                 setTimeout(() => alerta.remove(), 300);
             }, 5000);
         }
 
-        // Função para alternar entre as abas de navegação
-        function showTab(tabName, element) {
+        window.showTab = function(tabName, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            
             document.getElementById(tabName).classList.add('active');
-            element.classList.add('active');
-
+            if(element) element.classList.add('active');
             if (tabName === 'buscar') carregarVagas();
             if (tabName === 'resultados') carregarTodosCandidatos();
         }
 
         // ===================================================================
-        // MANIPULAÇÃO DE FORMULÁRIOS E DADOS
+        // MANIPULAÇÃO DE FORMULÁRIOS E DADOS (MIGRADOS PARA FIREBASE)
         // ===================================================================
-
-        // Listener para o formulário de cadastro de candidato
         document.getElementById('formCandidato').addEventListener('submit', async (e) => {
             e.preventDefault();
             const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Enviando...';
+
             const formData = new FormData(form);
             const curriculoFile = formData.get('curriculo');
 
             if (curriculoFile && curriculoFile.size > 10 * 1024 * 1024) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Cadastrar Candidato';
                 return mostrarAlerta('Arquivo de currículo excede o limite de 10MB.', 'error');
             }
 
             try {
                 const candidatoData = Object.fromEntries(formData.entries());
-                candidatoData.skills = candidatoData.skills ? candidatoData.skills.split(',').map(s => s.trim()) : [];
+                candidatoData.skills = candidatoData.skills ? candidatoData.skills.split(',').map(s => s.trim().toLowerCase()) : [];
+                candidatoData.experiencia_anos = parseInt(candidatoData.experiencia_anos, 10) || 0;
                 delete candidatoData.curriculo;
+                candidatoData.data_cadastro = serverTimestamp();
 
                 if (curriculoFile && curriculoFile.name) {
-                    const filePath = `public/${Date.now()}_${curriculoFile.name}`;
-                    const { error: uploadError } = await supabaseClient.storage.from('curriculos').upload(filePath, curriculoFile);
-                    if (uploadError) throw uploadError;
-                    const { data: urlData } = supabaseClient.storage.from('curriculos').getPublicUrl(filePath);
-                    candidatoData.curriculo_url = urlData.publicUrl;
+                    const filePath = `curriculos/${Date.now()}_${curriculoFile.name}`;
+                    const storageRef = ref(storage, filePath);
+                    await uploadBytes(storageRef, curriculoFile);
+                    candidatoData.curriculo_url = await getDownloadURL(storageRef);
                 }
 
-                const { error } = await supabaseClient.from('candidatos').insert([candidatoData]);
-                if (error) throw error;
+                const candidatosCollection = collection(db, 'candidatos');
+                await addDoc(candidatosCollection, candidatoData);
                 
                 mostrarAlerta('Candidato cadastrado com sucesso!');
                 form.reset();
                 document.querySelector('.file-upload-label').textContent = 'Clique para selecionar o arquivo';
                 atualizarEstatisticas();
-
             } catch (error) {
-                // Log de erro mais detalhado
-                console.error('Erro detalhado ao cadastrar candidato:', error);
-                const message = error.message.includes('duplicate key') 
-                    ? 'Telefone ou e-mail já cadastrado.' 
-                    : `Erro ao cadastrar candidato: ${error.message}`;
-                mostrarAlerta(message, 'error');
+                console.error('Erro ao cadastrar candidato:', error);
+                mostrarAlerta(`Erro ao cadastrar candidato: ${error.message}`, 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Cadastrar Candidato';
             }
         });
         
-        // Listener para o formulário de cadastro de vaga
         document.getElementById('formVaga').addEventListener('submit', async (e) => {
             e.preventDefault();
             const form = e.target;
             const formData = new FormData(form);
             const vagaData = Object.fromEntries(formData.entries());
             vagaData.experiencia_min_anos = parseInt(vagaData.experiencia_min_anos, 10) || 0;
+            vagaData.status = 'aberta';
+            vagaData.data_criacao = serverTimestamp();
 
             try {
-                const { error } = await supabaseClient.from('vagas').insert([vagaData]);
-                if (error) throw error;
+                const vagasCollection = collection(db, 'vagas');
+                await addDoc(vagasCollection, vagaData);
                 mostrarAlerta('Vaga cadastrada com sucesso!');
                 form.reset();
                 atualizarEstatisticas();
                 carregarVagas();
             } catch (error) {
-                // Log de erro mais detalhado
-                console.error('Erro detalhado ao cadastrar vaga:', error);
+                console.error('Erro ao cadastrar vaga:', error);
                 mostrarAlerta(`Erro ao cadastrar vaga: ${error.message}`, 'error');
             }
         });
 
         // ===================================================================
-        // FUNÇÕES DE BUSCA E EXIBIÇÃO
+        // FUNÇÕES DE BUSCA E EXIBIÇÃO (MIGRADAS PARA FIREBASE)
         // ===================================================================
-
-        // Carrega as vagas ativas para o dropdown de busca
-        async function carregarVagas() {
+        window.carregarVagas = async function() {
             const select = document.getElementById('selectVaga');
             try {
-                const { data, error } = await supabaseClient.from('vagas').select('id, titulo, cidade').eq('status', 'aberta').order('data_criacao', { ascending: false });
-                if (error) throw error;
+                const vagasCollection = collection(db, 'vagas');
+                const q = query(vagasCollection, where('status', '==', 'aberta'), orderBy('data_criacao', 'desc'));
+                const querySnapshot = await getDocs(q);
+                
                 select.innerHTML = '<option value="">Selecione uma vaga...</option>';
-                data.forEach(vaga => {
+                querySnapshot.forEach(doc => {
+                    const vaga = doc.data();
                     const option = document.createElement('option');
-                    option.value = vaga.id;
+                    option.value = doc.id;
                     option.textContent = `${vaga.titulo} - ${vaga.cidade}`;
                     select.appendChild(option);
                 });
             } catch (error) {
                 console.error('Erro ao carregar vagas:', error);
+                mostrarAlerta('Erro ao carregar vagas. Pode ser necessário criar um índice no Firestore. Verifique o console de depuração (F12) para um link de criação.', 'error');
                 select.innerHTML = '<option value="">Erro ao carregar vagas</option>';
             }
         }
 
-        // Busca candidatos compatíveis com a vaga selecionada usando a função RPC
-        async function buscarCandidatos() {
+        window.buscarCandidatos = async function() {
             const vagaId = document.getElementById('selectVaga').value;
             if (!vagaId) return mostrarAlerta('Selecione uma vaga primeiro.', 'error');
 
@@ -583,27 +571,61 @@
             document.getElementById('resultadosBusca').innerHTML = '';
 
             try {
-                const { data, error } = await supabaseClient.rpc('buscar_candidatos_compativeis', { id_vaga: vagaId });
-                if (error) throw error;
-                candidatosBusca = data;
-                exibirCandidatos(data, 'resultadosBusca');
+                const vagaRef = doc(db, 'vagas', vagaId);
+                const vagaDoc = await getDoc(vagaRef);
+                if (!vagaDoc.exists()) throw new Error("Vaga não encontrada!");
+                const vaga = vagaDoc.data();
+
+                const palavrasChaveVaga = vaga.titulo.toLowerCase().split(' ');
+                
+                const candidatosCollection = collection(db, 'candidatos');
+                const q = query(candidatosCollection, 
+                    where('cidade', '==', vaga.cidade),
+                    where('experiencia_anos', '>=', vaga.experiencia_min_anos || 0)
+                );
+                
+                const querySnapshot = await getDocs(q);
+
+                let candidatosCompativeis = [];
+                querySnapshot.forEach(doc => {
+                    const candidato = { id: doc.id, ...doc.data() };
+                    let score = 0;
+
+                    if (candidato.cargo_desejado && vaga.titulo.toLowerCase().includes(candidato.cargo_desejado.toLowerCase())) {
+                        score += 50;
+                    }
+                    if (candidato.skills && candidato.skills.length > 0) {
+                        const matches = candidato.skills.filter(skill => palavrasChaveVaga.includes(skill));
+                        score += matches.length * 25;
+                    }
+                    
+                    if (score > 0) {
+                        candidato.score = score;
+                        candidatosCompativeis.push(candidato);
+                    }
+                });
+
+                candidatosCompativeis.sort((a, b) => b.score - a.score);
+                candidatosBusca = candidatosCompativeis;
+                exibirCandidatos(candidatosCompativeis, 'resultadosBusca');
+
             } catch (error) {
                 console.error('Erro na busca:', error);
-                mostrarAlerta('Erro ao buscar candidatos.', 'error');
+                mostrarAlerta('Erro ao buscar. Pode ser necessário criar um índice no Firestore. Verifique o console (F12).', 'error');
             } finally {
                 document.getElementById('loadingBusca').style.display = 'none';
             }
         }
 
-        // Carrega todos os candidatos para a aba de "Resultados"
         async function carregarTodosCandidatos() {
             document.getElementById('loadingTodos').style.display = 'block';
             document.getElementById('listaTodosCandidatos').innerHTML = '';
             try {
-                const { data, error } = await supabaseClient.from('candidatos').select('*').order('data_cadastro', { ascending: false });
-                if (error) throw error;
-                todosOsCandidatos = data;
-                exibirCandidatos(data, 'listaTodosCandidatos');
+                const candidatosCollection = collection(db, 'candidatos');
+                const q = query(candidatosCollection, orderBy('data_cadastro', 'desc'));
+                const querySnapshot = await getDocs(q);
+                todosOsCandidatos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                exibirCandidatos(todosOsCandidatos, 'listaTodosCandidatos');
             } catch (error) {
                 console.error('Erro ao carregar todos os candidatos:', error);
                 mostrarAlerta('Erro ao carregar candidatos.', 'error');
@@ -612,14 +634,17 @@
             }
         }
 
-        // Renderiza a lista de candidatos na tela
         function exibirCandidatos(candidatos, containerId) {
             const container = document.getElementById(containerId);
+            container.innerHTML = ''; // Limpa o container antes de adicionar novos cards
             if (candidatos.length === 0) {
                 container.innerHTML = '<p style="text-align:center; padding: 20px;">Nenhum candidato encontrado.</p>';
                 return;
             }
-            container.innerHTML = candidatos.map(c => `
+            container.innerHTML = candidatos.map(c => {
+                // Converte timestamp do Firebase para Data, se necessário
+                const dataCadastro = c.data_cadastro && c.data_cadastro.toDate ? c.data_cadastro.toDate().toLocaleDateString('pt-BR') : 'N/A';
+                return `
                 <div class="candidato-card" data-id="${c.id}" data-nome="${c.nome}" data-cidade="${c.cidade}">
                     <div class="candidato-header">
                         <div class="candidato-nome">${c.nome}</div>
@@ -636,11 +661,10 @@
                         ${c.curriculo_url ? `<a href="${c.curriculo_url}" target="_blank" class="btn">Baixar Currículo</a>` : ''}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
         
-        // Filtra a lista de todos os candidatos em tempo real
-        function filtrarTodosCandidatos() {
+        window.filtrarTodosCandidatos = function() {
             const filtroNome = document.getElementById('filtroNome').value.toLowerCase();
             const filtroCidade = document.getElementById('filtroCidade').value.toLowerCase();
             const cards = document.querySelectorAll('#listaTodosCandidatos .candidato-card');
@@ -653,34 +677,40 @@
         }
 
         // ===================================================================
-        // FUNÇÕES DO MODAL E EXPORTAÇÃO
+        // FUNÇÕES DO MODAL E EXPORTAÇÃO (MIGRADAS E AJUSTADAS)
         // ===================================================================
-
-        // Exibe o modal com detalhes completos do candidato
-        async function verDetalhes(candidatoId) {
+        window.verDetalhes = async function(candidatoId) {
             try {
-                const { data, error } = await supabaseClient.from('candidatos').select('*').eq('id', candidatoId).single();
-                if (error) throw error;
-                document.getElementById('conteudoModal').innerHTML = `
-                    <h2>${data.nome}</h2>
-                    <p><strong>Telefone:</strong> ${data.telefone}</p>
-                    <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
-                    <p><strong>Cidade:</strong> ${data.cidade}</p>
-                    <p><strong>Cargo Desejado:</strong> ${data.cargo_desejado}</p>
-                    <p><strong>Experiência:</strong> ${data.experiencia_anos ?? 'N/A'} anos</p>
-                    <p><strong>Disponibilidade:</strong> ${data.disponibilidade || 'N/A'}</p>
-                    <p><strong>Habilidades:</strong> ${data.skills ? data.skills.join(', ') : 'N/A'}</p>
-                    <p><strong>Observações:</strong> ${data.observacoes || 'N/A'}</p>
-                    <p><strong>Cadastrado em:</strong> ${new Date(data.data_cadastro).toLocaleDateString('pt-BR')}</p>
-                    ${data.curriculo_url ? `<br><a href="${data.curriculo_url}" target="_blank" class="btn">Baixar Currículo</a>` : ''}
-                `;
-                document.getElementById('modalCandidato').classList.add('show');
+                const candidatoRef = doc(db, "candidatos", candidatoId);
+                const docSnap = await getDoc(candidatoRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const dataCadastro = data.data_cadastro && data.data_cadastro.toDate ? data.data_cadastro.toDate().toLocaleDateString('pt-BR') : 'N/A';
+                    document.getElementById('conteudoModal').innerHTML = `
+                        <h2>${data.nome}</h2>
+                        <p><strong>Telefone:</strong> ${data.telefone}</p>
+                        <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
+                        <p><strong>Cidade:</strong> ${data.cidade}</p>
+                        <p><strong>Cargo Desejado:</strong> ${data.cargo_desejado}</p>
+                        <p><strong>Experiência:</strong> ${data.experiencia_anos ?? 'N/A'} anos</p>
+                        <p><strong>Disponibilidade:</strong> ${data.disponibilidade || 'N/A'}</p>
+                        <p><strong>Habilidades:</strong> ${data.skills ? data.skills.join(', ') : 'N/A'}</p>
+                        <p><strong>Observações:</strong> ${data.observacoes || 'N/A'}</p>
+                        <p><strong>Cadastrado em:</strong> ${dataCadastro}</p>
+                        ${data.curriculo_url ? `<br><a href="${data.curriculo_url}" target="_blank" class="btn">Baixar Currículo</a>` : ''}
+                    `;
+                    document.getElementById('modalCandidato').classList.add('show');
+                } else {
+                    throw new Error("Candidato não encontrado");
+                }
             } catch (error) {
+                console.error("Erro ao ver detalhes:", error);
                 mostrarAlerta('Erro ao carregar detalhes do candidato.', 'error');
             }
         }
 
-        function fecharModal() {
+        window.fecharModal = function() {
             document.getElementById('modalCandidato').classList.remove('show');
         }
 
@@ -706,34 +736,41 @@
             document.body.removeChild(link);
         }
 
-        function exportarCSV() {
+        window.exportarCSV = function() {
             if (candidatosBusca.length === 0) return mostrarAlerta('Nenhum candidato na busca para exportar.', 'error');
             const csv = gerarCSV(candidatosBusca);
             baixarCSV(csv, 'candidatos_selecionados.csv');
         }
         
-        async function exportarTodosCSV() {
+        window.exportarTodosCSV = function() {
             if (todosOsCandidatos.length === 0) return mostrarAlerta('Não há candidatos para exportar.', 'error');
             const csv = gerarCSV(todosOsCandidatos);
             baixarCSV(csv, 'todos_os_candidatos.csv');
         }
 
         // ===================================================================
-        // INICIALIZAÇÃO E ESTATÍSTICAS
+        // INICIALIZAÇÃO E ESTATÍSTICAS (MIGRADAS PARA FIREBASE)
         // ===================================================================
-
-        // Atualiza os números nos cards de estatísticas
         async function atualizarEstatisticas() {
             try {
-                const { count: totalCandidatos } = await supabaseClient.from('candidatos').select('*', { count: 'exact', head: true });
-                document.getElementById('totalCandidatos').textContent = totalCandidatos || 0;
-                
-                const { count: totalVagas } = await supabaseClient.from('vagas').select('*', { count: 'exact', head: true }).eq('status', 'aberta');
-                document.getElementById('totalVagas').textContent = totalVagas || 0;
+                // Contagem total de candidatos
+                const candidatosCollection = collection(db, 'candidatos');
+                const totalCandidatosSnap = await getCount(candidatosCollection);
+                document.getElementById('totalCandidatos').textContent = totalCandidatosSnap.data().count;
 
-                const hoje = new Date().toISOString().slice(0, 10);
-                const { count: candidatosHoje } = await supabaseClient.from('candidatos').select('*', { count: 'exact', head: true }).gte('data_cadastro', hoje);
-                document.getElementById('candidatosHoje').textContent = candidatosHoje || 0;
+                // Contagem de vagas abertas
+                const vagasCollection = collection(db, 'vagas');
+                const qVagas = query(vagasCollection, where('status', '==', 'aberta'));
+                const totalVagasSnap = await getCount(qVagas);
+                document.getElementById('totalVagas').textContent = totalVagasSnap.data().count;
+
+                // Contagem de candidatos hoje
+                const hoje = new Date();
+                hoje.setHours(0, 0, 0, 0); // Zera a hora para pegar desde o início do dia
+                const qHoje = query(candidatosCollection, where('data_cadastro', '>=', hoje));
+                const candidatosHojeSnap = await getCount(qHoje);
+                document.getElementById('candidatosHoje').textContent = candidatosHojeSnap.data().count;
+
             } catch (error) {
                 console.error('Erro ao atualizar estatísticas:', error);
             }
@@ -749,9 +786,11 @@
             if (event.target == document.getElementById('modalCandidato')) fecharModal();
         };
 
+        // Carrega os dados iniciais quando a página é carregada
         document.addEventListener('DOMContentLoaded', () => {
             atualizarEstatisticas();
-            showTab('candidatos', document.querySelector('.tab-button.active'));
+            // Ativa a primeira aba por padrão
+            showTab('candidatos', document.querySelector('.tab-button'));
         });
     </script>
 </body>
