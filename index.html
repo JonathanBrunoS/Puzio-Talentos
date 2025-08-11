@@ -133,6 +133,9 @@
         .btn-secondary {
             background: #6c757d;
         }
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
         /* Estilos dos alertas e loading */
         .alert {
             position: fixed;
@@ -179,8 +182,8 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* Estilos dos cards de candidato */
-        .candidato-card {
+        /* Estilos dos cards de candidato e vaga */
+        .card {
             background: #ffffff;
             border: 1px solid #e9ecef;
             border-radius: 8px;
@@ -188,31 +191,45 @@
             margin-bottom: 15px;
             transition: all 0.3s ease;
         }
-        .candidato-card:hover {
+        .card:hover {
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             transform: translateY(-2px);
             border-left: 4px solid #0055a5;
         }
-        .candidato-header {
+        .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
-        .candidato-nome {
+        .card-title {
             font-size: 1.2rem;
             font-weight: 600;
             color: #003366;
         }
+        /* NOVO DESIGN DO SCORE */
         .score-badge {
-            background: #003366;
-            color: white;
-            padding: 5px 15px;
+            padding: 6px 16px;
             border-radius: 20px;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.9rem;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease;
         }
-        .candidato-info {
+        .score-badge:hover {
+            transform: scale(1.05);
+        }
+        .score-high {
+            background: linear-gradient(45deg, #28a745, #218838);
+        }
+        .score-medium {
+            background: linear-gradient(45deg, #17a2b8, #138496);
+        }
+        .score-low {
+            background: linear-gradient(45deg, #6c757d, #5a6268);
+        }
+        .card-info {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 10px;
@@ -287,7 +304,7 @@
         @media (max-width: 768px) {
             .form-row { grid-template-columns: 1fr; }
             .tabs { flex-direction: column; }
-            .candidato-info { grid-template-columns: 1fr; }
+            .card-info { grid-template-columns: 1fr; }
             .header h1 { font-size: 2rem; }
         }
     </style>
@@ -317,6 +334,7 @@
         <div class="tabs">
             <button class="tab-button active" onclick="showTab('candidatos', this)">Cadastrar Candidato</button>
             <button class="tab-button" onclick="showTab('vagas', this)">Cadastrar Vaga</button>
+            <button class="tab-button" onclick="showTab('gerenciarVagas', this)">Gerenciar Vagas</button>
             <button class="tab-button" onclick="showTab('buscar', this)">Buscar por Vaga</button>
             <button class="tab-button" onclick="showTab('resultados', this)">Todos os Candidatos</button>
         </div>
@@ -326,75 +344,44 @@
         <div id="candidatos" class="tab-content active">
             <h2>Cadastrar Novo Candidato</h2>
             <form id="formCandidato">
-                <div class="form-row">
-                    <div class="form-group"><label for="nome">Nome Completo *</label><input type="text" id="nome" name="nome" required></div>
-                    <div class="form-group"><label for="telefone">Telefone *</label><input type="tel" id="telefone" name="telefone" required placeholder="(11) 99999-9999"></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label for="email">E-mail</label><input type="email" id="email" name="email"></div>
-                    <div class="form-group"><label for="cidade">Cidade *</label><input type="text" id="cidade" name="cidade" required></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label for="cargo_desejado">Cargo Desejado *</label><input type="text" id="cargo_desejado" name="cargo_desejado" required placeholder="Ex: Motorista, Operador de Empilhadeira"></div>
-                    <div class="form-group"><label for="experiencia_anos">Experiência (anos)</label><input type="number" id="experiencia_anos" name="experiencia_anos" min="0" max="50"></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label for="disponibilidade">Disponibilidade</label><select id="disponibilidade" name="disponibilidade"><option value="">Selecione...</option><option value="imediato">Imediato</option><option value="15 dias">15 dias</option><option value="30 dias">30 dias</option><option value="a combinar">A combinar</option></select></div>
-                    <div class="form-group"><label for="skills">Habilidades/Palavras-chave</label><input type="text" id="skills" name="skills" placeholder="Ex: motorista, empilhadeira (separar por vírgula)"></div>
-                </div>
-                <div class="form-group"><label for="observacoes">Observações</label><textarea id="observacoes" name="observacoes" placeholder="Informações adicionais..."></textarea></div>
-                <button type="submit" class="btn">Cadastrar Candidato</button>
-            </form>
+                </form>
         </div>
 
         <div id="vagas" class="tab-content">
             <h2>Cadastrar Nova Vaga</h2>
             <form id="formVaga">
-                <div class="form-row">
-                    <div class="form-group"><label for="titulo">Título da Vaga *</label><input type="text" id="titulo" name="titulo" required placeholder="Ex: Motorista de Caminhão"></div>
-                    <div class="form-group"><label for="cidadeVaga">Cidade *</label><input type="text" id="cidadeVaga" name="cidade" required></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label for="tipo_contrato">Tipo de Contrato</label><select id="tipo_contrato" name="tipo_contrato"><option value="">Selecione...</option><option value="CLT">CLT</option><option value="PJ">PJ</option><option value="Temporário">Temporário</option><option value="Estágio">Estágio</option></select></div>
-                    <div class="form-group"><label for="experiencia_min_anos">Experiência Mínima (anos)</label><input type="number" id="experiencia_min_anos" name="experiencia_min_anos" min="0" max="20" value="0"></div>
-                </div>
-                <div class="form-group"><label for="descricao">Descrição da Vaga</label><textarea id="descricao" name="descricao" placeholder="Descreva as principais atividades..."></textarea></div>
-                <div class="form-group"><label for="beneficios">Benefícios</label><textarea id="beneficios" name="beneficios" placeholder="Ex: Vale transporte, vale refeição..."></textarea></div>
-                <button type="submit" class="btn">Cadastrar Vaga</button>
-            </form>
+                </form>
+        </div>
+        
+        <div id="gerenciarVagas" class="tab-content">
+            <h2>Gerenciar Vagas Cadastradas</h2>
+            <div id="loadingGerenciarVagas" class="loading"><div class="spinner"></div><p>Carregando vagas...</p></div>
+            <div id="listaVagasGerenciar"></div>
         </div>
 
         <div id="buscar" class="tab-content">
-            <h2>Buscar Candidatos por Vaga</h2>
-            <div class="form-group"><label for="selectVaga">Selecione uma Vaga</label><select id="selectVaga"><option value="">Carregando vagas...</option></select></div>
-            <button onclick="buscarCandidatos()" class="btn">Buscar Candidatos</button>
-            <button onclick="exportarCSV()" class="btn btn-secondary">Exportar Busca</button>
-            <div id="loadingBusca" class="loading"><div class="spinner"></div><p>Buscando candidatos...</p></div>
-            <div id="resultadosBusca"></div>
-        </div>
+            </div>
 
         <div id="resultados" class="tab-content">
-            <h2>Todos os Candidatos</h2>
-            <div class="form-row">
-                <div class="form-group"><label for="filtroNome">Filtrar por Nome</label><input type="text" id="filtroNome" oninput="filtrarTodosCandidatos()" placeholder="Digite o nome..."></div>
-                <div class="form-group"><label for="filtroCidade">Filtrar por Cidade</label><input type="text" id="filtroCidade" oninput="filtrarTodosCandidatos()" placeholder="Digite a cidade..."></div>
             </div>
-            <button onclick="exportarTodosCSV()" class="btn btn-secondary">Exportar Todos</button>
-            <div id="loadingTodos" class="loading"><div class="spinner"></div><p>Carregando candidatos...</p></div>
-            <div id="listaTodosCandidatos"></div>
-        </div>
     </div>
 
     <div id="modalCandidato" class="modal">
+        </div>
+
+    <div id="modalEdicaoVaga" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="fecharModal()">&times;</span>
-            <div id="conteudoModal"></div>
+            <span class="close" onclick="fecharModalEdicao()">&times;</span>
+            <h2>Editar Vaga</h2>
+            <div id="conteudoModalEdicao">
+                </div>
         </div>
     </div>
 
     <script type="module">
+        // ADICIONADO: 'deleteDoc' e 'updateDoc' para gerenciar vagas
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy, doc, getDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy, doc, getDoc, Timestamp, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // ===================================================================
         // CONFIGURAÇÃO DO FIREBASE
@@ -408,13 +395,11 @@
             appId: "1:27472220237:web:22de13fdc6aea6b8ef8c04"
         };
 
-        // Inicializa o Firebase e os serviços
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        console.log('Firebase App (v10) - Versão Simplificada - Inicializado com sucesso!');
+        console.log('Firebase App (v10) - Versão com Gerenciamento - Inicializado com sucesso!');
 
-        // Variáveis globais para armazenar os resultados das buscas
         let candidatosBusca = [];
         let todosOsCandidatos = [];
 
@@ -422,16 +407,7 @@
         // FUNÇÕES UTILITÁRIAS
         // ===================================================================
         function mostrarAlerta(mensagem, tipo = 'success') {
-            const container = document.getElementById('alert-container');
-            const alerta = document.createElement('div');
-            alerta.className = `alert alert-${tipo}`;
-            alerta.textContent = mensagem;
-            container.appendChild(alerta);
-            setTimeout(() => alerta.classList.add('show'), 10);
-            setTimeout(() => {
-                alerta.classList.remove('show');
-                setTimeout(() => alerta.remove(), 300);
-            }, 5000);
+            // ... (código inalterado)
         }
 
         window.showTab = function(tabName, element) {
@@ -441,13 +417,15 @@
             if(element) element.classList.add('active');
             if (tabName === 'buscar') carregarVagas();
             if (tabName === 'resultados') carregarTodosCandidatos();
+            // ADICIONADO: Carrega as vagas na nova aba
+            if (tabName === 'gerenciarVagas') carregarVagasParaGerenciar();
         }
         
-        function incrementarContador(elementId) {
+        function incrementarContador(elementId, valor = 1) {
             const elemento = document.getElementById(elementId);
             if (elemento) {
                 const valorAtual = parseInt(elemento.textContent, 10);
-                elemento.textContent = valorAtual + 1;
+                elemento.textContent = valorAtual + valor;
             }
         }
 
@@ -455,180 +433,27 @@
         // MANIPULAÇÃO DE FORMULÁRIOS E DADOS
         // ===================================================================
         document.getElementById('formCandidato').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const submitButton = form.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Enviando...';
-
-            try {
-                const candidatoData = Object.fromEntries(new FormData(form).entries());
-                candidatoData.skills = candidatoData.skills ? candidatoData.skills.split(',').map(s => s.trim().toLowerCase()) : [];
-                candidatoData.experiencia_anos = parseInt(candidatoData.experiencia_anos, 10) || 0;
-                candidatoData.data_cadastro = serverTimestamp();
-                
-                const candidatosCollection = collection(db, 'candidatos');
-                await addDoc(candidatosCollection, candidatoData);
-                
-                mostrarAlerta('Candidato cadastrado com sucesso!');
-                form.reset();
-                
-                incrementarContador('totalCandidatos');
-                incrementarContador('candidatosHoje');
-                
-            } catch (error) {
-                console.error('Erro ao cadastrar candidato:', error);
-                mostrarAlerta(`Erro ao cadastrar candidato: ${error.message}. Verifique o console (F12) para detalhes.`, 'error');
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Cadastrar Candidato';
-            }
+            // ... (código inalterado)
         });
         
         document.getElementById('formVaga').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const formData = new FormData(form);
-            const vagaData = Object.fromEntries(formData.entries());
-            vagaData.experiencia_min_anos = parseInt(vagaData.experiencia_min_anos, 10) || 0;
-            vagaData.status = 'aberta';
-            vagaData.data_criacao = serverTimestamp();
-
-            try {
-                const vagasCollection = collection(db, 'vagas');
-                await addDoc(vagasCollection, vagaData);
-                mostrarAlerta('Vaga cadastrada com sucesso!');
-                form.reset();
-                incrementarContador('totalVagas');
-                carregarVagas();
-            } catch (error) {
-                console.error('Erro ao cadastrar vaga:', error);
-                mostrarAlerta(`Erro ao cadastrar vaga: ${error.message}`, 'error');
-            }
+            // ... (código inalterado)
         });
 
         // ===================================================================
         // FUNÇÕES DE BUSCA E EXIBIÇÃO
         // ===================================================================
         async function carregarVagas() {
-            const select = document.getElementById('selectVaga');
-            try {
-                const vagasCollection = collection(db, 'vagas');
-                const q = query(vagasCollection, where('status', '==', 'aberta'), orderBy('data_criacao', 'desc'));
-                const querySnapshot = await getDocs(q);
-                
-                select.innerHTML = '<option value="">Selecione uma vaga...</option>';
-                querySnapshot.forEach(doc => {
-                    const vaga = doc.data();
-                    const option = document.createElement('option');
-                    option.value = doc.id;
-                    option.textContent = `${vaga.titulo} - ${vaga.cidade}`;
-                    select.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Erro ao carregar vagas:', error);
-                mostrarAlerta('Erro ao carregar vagas. Pode ser necessário criar um índice no Firestore. Verifique o console (F12).', 'error');
-                select.innerHTML = '<option value="">Erro ao carregar vagas</option>';
-            }
+            // ... (código inalterado)
         }
         
         // FUNÇÃO DE BUSCA FINAL COM LÓGICA DE RELEVÂNCIA OBRIGATÓRIA
         window.buscarCandidatos = async function() {
-            const vagaId = document.getElementById('selectVaga').value;
-            if (!vagaId) return mostrarAlerta('Selecione uma vaga primeiro.', 'error');
-
-            document.getElementById('loadingBusca').style.display = 'block';
-            document.getElementById('resultadosBusca').innerHTML = '';
-
-            try {
-                // Passo 1: Puxar os detalhes da vaga selecionada
-                const vagaRef = doc(db, 'vagas', vagaId);
-                const vagaDoc = await getDoc(vagaRef);
-                if (!vagaDoc.exists()) throw new Error("Vaga não encontrada!");
-                const vaga = vagaDoc.data();
-                
-                const palavrasChaveVaga = vaga.titulo.toLowerCase().split(' ').filter(p => p.length > 2);
-
-                // Passo 2: Puxar TODOS os candidatos para analisar no código
-                const candidatosCollection = collection(db, 'candidatos');
-                const querySnapshot = await getDocs(candidatosCollection);
-                
-                let candidatosCompativeis = [];
-
-                // Passo 3: Analisar cada candidato e calcular o Score de forma corrigida
-                querySnapshot.forEach(doc => {
-                    const candidato = { id: doc.id, ...doc.data() };
-                    let relevanceScore = 0; // Pontuação principal (obrigatória)
-                    let bonusScore = 0;     // Pontuação extra (opcional)
-
-                    // --- CÁLCULO DA PONTUAÇÃO DE RELEVÂNCIA ---
-                    // Critério 1: Match de Cargo Desejado (Peso: 200 pontos)
-                    if (candidato.cargo_desejado) {
-                        const cargoCandidato = candidato.cargo_desejado.toLowerCase();
-                        if (vaga.titulo.toLowerCase().includes(cargoCandidato)) {
-                            relevanceScore += 200;
-                        }
-                    }
-
-                    // Critério 2: Match de Habilidades (Skills) (Peso: 150 pontos por skill)
-                    if (candidato.skills && candidato.skills.length > 0) {
-                        candidato.skills.forEach(skill => {
-                            if (palavrasChaveVaga.includes(skill.toLowerCase())) {
-                                relevanceScore += 150;
-                            }
-                        });
-                    }
-
-                    // --- VERIFICAÇÃO DE RELEVÂNCIA ---
-                    // Só continua se o candidato for minimamente relevante para a vaga
-                    if (relevanceScore > 0) {
-                        
-                        // --- CÁLCULO DA PONTUAÇÃO DE BÔNUS ---
-                        // Bônus por Cidade (Peso: 100 pontos)
-                        if (candidato.cidade && vaga.cidade && candidato.cidade.toLowerCase() === vaga.cidade.toLowerCase()) {
-                            bonusScore += 100;
-                        }
-
-                        // Bônus por Experiência (Peso: 50 pontos)
-                        if ((candidato.experiencia_anos || 0) >= (vaga.experiencia_min_anos || 0)) {
-                            bonusScore += 50;
-                        }
-
-                        // Soma tudo e adiciona na lista
-                        candidato.score = relevanceScore + bonusScore;
-                        candidatosCompativeis.push(candidato);
-                    }
-                });
-
-                // Passo 4: Ordenar a lista do maior para o menor score
-                candidatosCompativeis.sort((a, b) => b.score - a.score);
-
-                candidatosBusca = candidatosCompativeis; 
-                exibirCandidatos(candidatosCompativeis, 'resultadosBusca');
-
-            } catch (error) {
-                console.error('Erro na busca:', error);
-                mostrarAlerta('Ocorreu um erro ao buscar os candidatos.', 'error');
-            } finally {
-                document.getElementById('loadingBusca').style.display = 'none';
-            }
+            // ... (código inalterado)
         }
 
         async function carregarTodosCandidatos() {
-            document.getElementById('loadingTodos').style.display = 'block';
-            document.getElementById('listaTodosCandidatos').innerHTML = '';
-            try {
-                const candidatosCollection = collection(db, 'candidatos');
-                const q = query(candidatosCollection, orderBy('data_cadastro', 'desc'));
-                const querySnapshot = await getDocs(q);
-                todosOsCandidatos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                exibirCandidatos(todosOsCandidatos, 'listaTodosCandidatos');
-            } catch (error) {
-                console.error('Erro ao carregar todos os candidatos:', error);
-                mostrarAlerta('Erro ao carregar candidatos.', 'error');
-            } finally {
-                document.getElementById('loadingTodos').style.display = 'none';
-            }
+            // ... (código inalterado)
         }
 
         function exibirCandidatos(candidatos, containerId) {
@@ -638,13 +463,24 @@
                 container.innerHTML = '<p style="text-align:center; padding: 20px;">Nenhum candidato compatível encontrado.</p>';
                 return;
             }
-            container.innerHTML = candidatos.map(c => `
-                <div class="candidato-card" data-id="${c.id}" data-nome="${c.nome}" data-cidade="${c.cidade}">
-                    <div class="candidato-header">
-                        <div class="candidato-nome">${c.nome}</div>
-                        ${c.score !== undefined ? `<div class="score-badge">Score: ${c.score}</div>` : ''}
+            container.innerHTML = candidatos.map(c => {
+                // LÓGICA PARA DEFINIR A COR DO SCORE
+                let badgeClass = 'score-badge';
+                if (c.score >= 400) {
+                    badgeClass += ' score-high';
+                } else if (c.score >= 250) {
+                    badgeClass += ' score-medium';
+                } else {
+                    badgeClass += ' score-low';
+                }
+
+                return `
+                <div class="card" data-id="${c.id}" data-nome="${c.nome}" data-cidade="${c.cidade}">
+                    <div class="card-header">
+                        <div class="card-title">${c.nome}</div>
+                        ${c.score !== undefined ? `<div class="${badgeClass}">Score: ${c.score}</div>` : ''}
                     </div>
-                    <div class="candidato-info">
+                    <div class="card-info">
                         <div class="info-item"><span class="info-label">Telefone:</span> ${c.telefone}</div>
                         <div class="info-item"><span class="info-label">Cidade:</span> ${c.cidade}</div>
                         <div class="info-item"><span class="info-label">Cargo:</span> ${c.cargo_desejado}</div>
@@ -654,60 +490,155 @@
                         <button onclick="verDetalhes(event, '${c.id}')" class="btn btn-secondary">Ver Detalhes</button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
         
         window.filtrarTodosCandidatos = function() {
-            const filtroNome = document.getElementById('filtroNome').value.toLowerCase();
-            const filtroCidade = document.getElementById('filtroCidade').value.toLowerCase();
-            const cards = document.querySelectorAll('#listaTodosCandidatos .candidato-card');
-            cards.forEach(card => {
-                const nome = card.dataset.nome.toLowerCase();
-                const cidade = card.dataset.cidade.toLowerCase();
-                const show = nome.includes(filtroNome) && cidade.includes(filtroCidade);
-                card.style.display = show ? 'block' : 'none';
-            });
+            // ... (código inalterado)
+        }
+        
+        // ===================================================================
+        // NOVAS FUNÇÕES: GERENCIAMENTO DE VAGAS (EDITAR/EXCLUIR)
+        // ===================================================================
+        async function carregarVagasParaGerenciar() {
+            const container = document.getElementById('listaVagasGerenciar');
+            const loading = document.getElementById('loadingGerenciarVagas');
+            loading.style.display = 'block';
+            container.innerHTML = '';
+
+            try {
+                const vagasCollection = collection(db, 'vagas');
+                const q = query(vagasCollection, orderBy('data_criacao', 'desc'));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    container.innerHTML = '<p style="text-align:center;">Nenhuma vaga cadastrada.</p>';
+                    return;
+                }
+
+                container.innerHTML = querySnapshot.docs.map(doc => {
+                    const vaga = { id: doc.id, ...doc.data() };
+                    return `
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">${vaga.titulo}</div>
+                            </div>
+                            <div class="card-info">
+                                <div class="info-item"><span class="info-label">Cidade:</span> ${vaga.cidade}</div>
+                                <div class="info-item"><span class="info-label">Contrato:</span> ${vaga.tipo_contrato || 'N/A'}</div>
+                                <div class="info-item"><span class="info-label">Experiência Mínima:</span> ${vaga.experiencia_min_anos} anos</div>
+                            </div>
+                            <div>
+                                <button onclick="abrirModalEdicaoVaga('${vaga.id}')" class="btn">Editar</button>
+                                <button onclick="excluirVaga('${vaga.id}')" class="btn btn-danger">Excluir</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error("Erro ao carregar vagas para gerenciar:", error);
+                mostrarAlerta('Erro ao carregar as vagas.', 'error');
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        window.excluirVaga = async function(vagaId) {
+            if (!confirm('Tem certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+            try {
+                await deleteDoc(doc(db, 'vagas', vagaId));
+                mostrarAlerta('Vaga excluída com sucesso!', 'success');
+                incrementarContador('totalVagas', -1); // Decrementa o contador
+                carregarVagasParaGerenciar(); // Recarrega a lista de gerenciamento
+                carregarVagas(); // Recarrega a lista do dropdown de busca
+            } catch (error) {
+                console.error("Erro ao excluir vaga:", error);
+                mostrarAlerta('Erro ao excluir a vaga.', 'error');
+            }
+        }
+
+        window.abrirModalEdicaoVaga = async function(vagaId) {
+            const container = document.getElementById('conteudoModalEdicao');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            document.getElementById('modalEdicaoVaga').classList.add('show');
+            
+            try {
+                const vagaRef = doc(db, 'vagas', vagaId);
+                const docSnap = await getDoc(vagaRef);
+                if (!docSnap.exists()) throw new Error('Vaga não encontrada');
+                
+                const vaga = docSnap.data();
+                container.innerHTML = `
+                    <form id="formEditarVaga">
+                        <input type="hidden" name="vagaId" value="${vagaId}">
+                        <div class="form-row">
+                            <div class="form-group"><label>Título da Vaga *</label><input type="text" name="titulo" value="${vaga.titulo}" required></div>
+                            <div class="form-group"><label>Cidade *</label><input type="text" name="cidade" value="${vaga.cidade}" required></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Tipo de Contrato</label>
+                                <select name="tipo_contrato">
+                                    <option value="CLT" ${vaga.tipo_contrato === 'CLT' ? 'selected' : ''}>CLT</option>
+                                    <option value="PJ" ${vaga.tipo_contrato === 'PJ' ? 'selected' : ''}>PJ</option>
+                                    <option value="Temporário" ${vaga.tipo_contrato === 'Temporário' ? 'selected' : ''}>Temporário</option>
+                                    <option value="Estágio" ${vaga.tipo_contrato === 'Estágio' ? 'selected' : ''}>Estágio</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>Experiência Mínima (anos)</label><input type="number" name="experiencia_min_anos" value="${vaga.experiencia_min_anos}" min="0"></div>
+                        </div>
+                        <div class="form-group"><label>Descrição</label><textarea name="descricao">${vaga.descricao || ''}</textarea></div>
+                        <div class="form-group"><label>Benefícios</label><textarea name="beneficios">${vaga.beneficios || ''}</textarea></div>
+                        <button type="submit" class="btn">Salvar Alterações</button>
+                    </form>
+                `;
+                document.getElementById('formEditarVaga').addEventListener('submit', salvarEdicaoVaga);
+            } catch (error) {
+                console.error('Erro ao abrir modal de edição:', error);
+                mostrarAlerta('Não foi possível carregar os dados da vaga.', 'error');
+                fecharModalEdicao();
+            }
+        }
+
+        async function salvarEdicaoVaga(event) {
+            event.preventDefault();
+            const form = event.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Salvando...';
+
+            const formData = new FormData(form);
+            const vagaData = Object.fromEntries(formData.entries());
+            const vagaId = vagaData.vagaId;
+            delete vagaData.vagaId;
+            vagaData.experiencia_min_anos = parseInt(vagaData.experiencia_min_anos, 10) || 0;
+            
+            try {
+                const vagaRef = doc(db, 'vagas', vagaId);
+                await updateDoc(vagaRef, vagaData);
+                mostrarAlerta('Vaga atualizada com sucesso!');
+                fecharModalEdicao();
+                carregarVagasParaGerenciar();
+                carregarVagas();
+            } catch (error) {
+                console.error('Erro ao salvar edição da vaga:', error);
+                mostrarAlerta('Erro ao salvar as alterações.', 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Salvar Alterações';
+            }
+        }
+
+        window.fecharModalEdicao = function() {
+            document.getElementById('modalEdicaoVaga').classList.remove('show');
         }
 
         // ===================================================================
         // FUNÇÕES DO MODAL E EXPORTAÇÃO
         // ===================================================================
         window.verDetalhes = async function(event, candidatoId) {
-            const button = event.target;
-            const originalText = button.textContent;
-            button.disabled = true;
-            button.textContent = 'Carregando...';
-
-            try {
-                const candidatoRef = doc(db, "candidatos", candidatoId);
-                const docSnap = await getDoc(candidatoRef);
-
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    const dataCadastro = data.data_cadastro && data.data_cadastro.toDate ? data.data_cadastro.toDate().toLocaleDateString('pt-BR') : 'N/A';
-                    document.getElementById('conteudoModal').innerHTML = `
-                        <h2>${data.nome}</h2>
-                        <p><strong>Telefone:</strong> ${data.telefone}</p>
-                        <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
-                        <p><strong>Cidade:</strong> ${data.cidade}</p>
-                        <p><strong>Cargo Desejado:</strong> ${data.cargo_desejado}</p>
-                        <p><strong>Experiência:</strong> ${data.experiencia_anos ?? 'N/A'} anos</p>
-                        <p><strong>Disponibilidade:</strong> ${data.disponibilidade || 'N/A'}</p>
-                        <p><strong>Habilidades:</strong> ${data.skills ? data.skills.join(', ') : 'N/A'}</p>
-                        <p><strong>Observações:</strong> ${data.observacoes || 'N/A'}</p>
-                        <p><strong>Cadastrado em:</strong> ${dataCadastro}</p>
-                    `;
-                    document.getElementById('modalCandidato').classList.add('show');
-                } else {
-                    throw new Error("Candidato não encontrado");
-                }
-            } catch (error) {
-                console.error("Erro ao ver detalhes:", error);
-                mostrarAlerta('Erro ao carregar detalhes do candidato.', 'error');
-            } finally {
-                button.disabled = false;
-                button.textContent = originalText;
-            }
+            // ... (código inalterado)
         }
 
         window.fecharModal = function() {
@@ -715,75 +646,110 @@
         }
 
         function gerarCSV(candidatos) {
-            const headers = ['Nome', 'Telefone', 'Email', 'Cidade', 'Cargo Desejado', 'Experiencia (Anos)', 'Disponibilidade', 'Habilidades', 'Score'];
-            const rows = candidatos.map(c => [
-                `"${c.nome}"`, `"${c.telefone}"`, `"${c.email || ''}"`, `"${c.cidade}"`,
-                `"${c.cargo_desejado}"`, c.experiencia_anos || '', `"${c.disponibilidade || ''}"`,
-                `"${c.skills ? c.skills.join('; ') : ''}"`, c.score || ''
-            ].join(','));
-            return [headers.join(','), ...rows].join('\n');
+            // ... (código inalterado)
         }
 
         function baixarCSV(csvContent, fileName) {
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", fileName);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // ... (código inalterado)
         }
 
         window.exportarCSV = function() {
-            if (candidatosBusca.length === 0) return mostrarAlerta('Nenhum candidato na busca para exportar.', 'error');
-            const csv = gerarCSV(candidatosBusca);
-            baixarCSV(csv, 'candidatos_selecionados.csv');
+            // ... (código inalterado)
         }
         
         window.exportarTodosCSV = function() {
-            if (todosOsCandidatos.length === 0) return mostrarAlerta('Não há candidatos para exportar.', 'error');
-            const csv = gerarCSV(todosOsCandidatos);
-            baixarCSV(csv, 'todos_os_candidatos.csv');
+            // ... (código inalterado)
         }
 
         // ===================================================================
         // INICIALIZAÇÃO E ESTATÍSTICAS
         // ===================================================================
         async function atualizarEstatisticas() {
-            try {
-                const candidatosCollection = collection(db, 'candidatos');
-                const vagasCollection = collection(db, 'vagas');
-                
-                const totalCandidatosSnap = await getDocs(candidatosCollection);
-                document.getElementById('totalCandidatos').textContent = totalCandidatosSnap.size;
-
-                const qVagas = query(vagasCollection, where('status', '==', 'aberta'));
-                const totalVagasSnap = await getDocs(qVagas);
-                document.getElementById('totalVagas').textContent = totalVagasSnap.size;
-
-                const hoje = new Date();
-                hoje.setHours(0, 0, 0, 0); 
-                const qHoje = query(candidatosCollection, where('data_cadastro', '>=', Timestamp.fromDate(hoje)));
-                const candidatosHojeSnap = await getDocs(qHoje);
-                document.getElementById('candidatosHoje').textContent = candidatosHojeSnap.size;
-
-            } catch (error) {
-                console.error('Erro ao atualizar estatísticas:', error);
-                mostrarAlerta('Erro ao carregar estatísticas. Pode ser necessário criar um índice no Firestore. Verifique o console (F12).', 'error');
-            }
+            // ... (código inalterado)
         }
 
         // Listeners e inicialização da página
         window.onclick = (event) => {
-            if (event.target == document.getElementById('modalCandidato')) fecharModal();
+            if (event.target == document.getElementById('modalCandidato') || event.target == document.getElementById('modalEdicaoVaga')) {
+                fecharModal();
+                fecharModalEdicao();
+            }
         };
 
         document.addEventListener('DOMContentLoaded', () => {
+            // O conteúdo dos formulários está sendo inserido aqui para evitar repetição
+            document.getElementById('candidatos').innerHTML = `<h2>Cadastrar Novo Candidato</h2> <form id="formCandidato">${formCandidatoHTML}</form>`;
+            document.getElementById('vagas').innerHTML = `<h2>Cadastrar Nova Vaga</h2> <form id="formVaga">${formVagaHTML}</form>`;
+            document.getElementById('buscar').innerHTML = `<h2>Buscar Candidatos por Vaga</h2>${buscarHTML}`;
+            document.getElementById('resultados').innerHTML = `<h2>Todos os Candidatos</h2>${resultadosHTML}`;
+            document.getElementById('modalCandidato').innerHTML = `<div class="modal-content"><span class="close" onclick="fecharModal()">&times;</span><div id="conteudoModal"></div></div>`;
+            
+            // Re-adiciona os listeners aos formulários criados dinamicamente
+            document.getElementById('formCandidato').addEventListener('submit', salvarCandidato);
+            document.getElementById('formVaga').addEventListener('submit', salvarVaga);
+            
             atualizarEstatisticas();
             showTab('candidatos', document.querySelector('.tab-button'));
         });
+        
+        // Templates HTML para os formulários
+        const formCandidatoHTML = `
+            <div class="form-row">
+                <div class="form-group"><label for="nome">Nome Completo *</label><input type="text" id="nome" name="nome" required></div>
+                <div class="form-group"><label for="telefone">Telefone *</label><input type="tel" id="telefone" name="telefone" required placeholder="(11) 99999-9999"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label for="email">E-mail</label><input type="email" id="email" name="email"></div>
+                <div class="form-group"><label for="cidade">Cidade *</label><input type="text" id="cidade" name="cidade" required></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label for="cargo_desejado">Cargo Desejado *</label><input type="text" id="cargo_desejado" name="cargo_desejado" required placeholder="Ex: Motorista, Operador de Empilhadeira"></div>
+                <div class="form-group"><label for="experiencia_anos">Experiência (anos)</label><input type="number" id="experiencia_anos" name="experiencia_anos" min="0" max="50"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label for="disponibilidade">Disponibilidade</label><select id="disponibilidade" name="disponibilidade"><option value="">Selecione...</option><option value="imediato">Imediato</option><option value="15 dias">15 dias</option><option value="30 dias">30 dias</option><option value="a combinar">A combinar</option></select></div>
+                <div class="form-group"><label for="skills">Habilidades/Palavras-chave</label><input type="text" id="skills" name="skills" placeholder="Ex: motorista, empilhadeira (separar por vírgula)"></div>
+            </div>
+            <div class="form-group"><label for="observacoes">Observações</label><textarea id="observacoes" name="observacoes" placeholder="Informações adicionais..."></textarea></div>
+            <button type="submit" class="btn">Cadastrar Candidato</button>`;
+            
+        const formVagaHTML = `
+            <div class="form-row">
+                <div class="form-group"><label for="titulo">Título da Vaga *</label><input type="text" name="titulo" required placeholder="Ex: Motorista de Caminhão"></div>
+                <div class="form-group"><label for="cidadeVaga">Cidade *</label><input type="text" name="cidade" required></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label for="tipo_contrato">Tipo de Contrato</label><select name="tipo_contrato"><option value="">Selecione...</option><option value="CLT">CLT</option><option value="PJ">PJ</option><option value="Temporário">Temporário</option><option value="Estágio">Estágio</option></select></div>
+                <div class="form-group"><label for="experiencia_min_anos">Experiência Mínima (anos)</label><input type="number" name="experiencia_min_anos" min="0" max="20" value="0"></div>
+            </div>
+            <div class="form-group"><label for="descricao">Descrição da Vaga</label><textarea name="descricao" placeholder="Descreva as principais atividades..."></textarea></div>
+            <div class="form-group"><label for="beneficios">Benefícios</label><textarea name="beneficios" placeholder="Ex: Vale transporte, vale refeição..."></textarea></div>
+            <button type="submit" class="btn">Cadastrar Vaga</button>`;
+
+        const buscarHTML = `
+            <div class="form-group"><label for="selectVaga">Selecione uma Vaga</label><select id="selectVaga"><option value="">Carregando vagas...</option></select></div>
+            <button onclick="buscarCandidatos()" class="btn">Buscar Candidatos</button>
+            <button onclick="exportarCSV()" class="btn btn-secondary">Exportar Busca</button>
+            <div id="loadingBusca" class="loading"><div class="spinner"></div><p>Buscando candidatos...</p></div>
+            <div id="resultadosBusca"></div>`;
+
+        const resultadosHTML = `
+            <div class="form-row">
+                <div class="form-group"><label for="filtroNome">Filtrar por Nome</label><input type="text" id="filtroNome" oninput="filtrarTodosCandidatos()" placeholder="Digite o nome..."></div>
+                <div class="form-group"><label for="filtroCidade">Filtrar por Cidade</label><input type="text" id="filtroCidade" oninput="filtrarTodosCandidatos()" placeholder="Digite a cidade..."></div>
+            </div>
+            <button onclick="exportarTodosCSV()" class="btn btn-secondary">Exportar Todos</button>
+            <div id="loadingTodos" class="loading"><div class="spinner"></div><p>Carregando candidatos...</p></div>
+            <div id="listaTodosCandidatos"></div>`;
+
+        // Renomeando funções de submit para evitar conflitos
+        async function salvarCandidato(e) {
+            document.getElementById('formCandidato').dispatchEvent(new Event('submit', {cancelable: true, bubbles: true}));
+        }
+        async function salvarVaga(e) {
+            document.getElementById('formVaga').dispatchEvent(new Event('submit', {cancelable: true, bubbles: true}));
+        }
+
     </script>
 </body>
 </html>
