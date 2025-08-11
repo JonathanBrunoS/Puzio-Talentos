@@ -290,21 +290,6 @@
             .candidato-info { grid-template-columns: 1fr; }
             .header h1 { font-size: 2rem; }
         }
-        /* Estilos para upload de arquivo */
-        .file-upload-label {
-            display: block;
-            padding: 12px;
-            border: 2px dashed #0055a5;
-            border-radius: 8px;
-            text-align: center;
-            background: #f8f9ff;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .file-upload-label:hover {
-            background: #f0f4ff;
-            border-color: #003366;
-        }
     </style>
 </head>
 <body>
@@ -358,11 +343,7 @@
                     <div class="form-group"><label for="skills">Habilidades/Palavras-chave</label><input type="text" id="skills" name="skills" placeholder="Ex: motorista, empilhadeira (separar por vírgula)"></div>
                 </div>
                 <div class="form-group"><label for="observacoes">Observações</label><textarea id="observacoes" name="observacoes" placeholder="Informações adicionais..."></textarea></div>
-                <div class="form-group">
-                    <label for="curriculo">Currículo (PDF, DOC, DOCX - máx 10MB)</label>
-                    <input type="file" id="curriculo" name="curriculo" accept=".pdf,.doc,.docx" style="display:none;">
-                    <label for="curriculo" class="file-upload-label">Clique para selecionar o arquivo</label>
-                </div>
+                
                 <button type="submit" class="btn">Cadastrar Candidato</button>
             </form>
         </div>
@@ -413,9 +394,9 @@
     </div>
 
     <script type="module">
+        // REMOVIDO: Importações do Storage
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy, doc, getDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
         // ===================================================================
         // CONFIGURAÇÃO DO FIREBASE
@@ -432,9 +413,9 @@
         // Inicializa o Firebase e os serviços
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const storage = getStorage(app);
+        // REMOVIDO: const storage = getStorage(app);
         
-        console.log('Firebase App (v10) inicializado com sucesso!');
+        console.log('Firebase App (v10) - Versão Simplificada - Inicializado com sucesso!');
 
         // Variáveis globais para armazenar os resultados das buscas
         let candidatosBusca = [];
@@ -465,7 +446,6 @@
             if (tabName === 'resultados') carregarTodosCandidatos();
         }
         
-        // OTIMIZAÇÃO 1: Função para incrementar contadores na tela instantaneamente
         function incrementarContador(elementId) {
             const elemento = document.getElementById(elementId);
             if (elemento) {
@@ -484,43 +464,26 @@
             submitButton.disabled = true;
             submitButton.textContent = 'Enviando...';
 
-            const formData = new FormData(form);
-            const curriculoFile = formData.get('curriculo');
-
-            if (curriculoFile && curriculoFile.size > 10 * 1024 * 1024) {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Cadastrar Candidato';
-                return mostrarAlerta('Arquivo de currículo excede o limite de 10MB.', 'error');
-            }
-
             try {
-                const candidatoData = Object.fromEntries(formData.entries());
+                const candidatoData = Object.fromEntries(new FormData(form).entries());
                 candidatoData.skills = candidatoData.skills ? candidatoData.skills.split(',').map(s => s.trim().toLowerCase()) : [];
                 candidatoData.experiencia_anos = parseInt(candidatoData.experiencia_anos, 10) || 0;
-                delete candidatoData.curriculo;
                 candidatoData.data_cadastro = serverTimestamp();
 
-                if (curriculoFile && curriculoFile.name) {
-                    const filePath = `curriculos/${Date.now()}_${curriculoFile.name}`;
-                    const storageRef = ref(storage, filePath);
-                    await uploadBytes(storageRef, curriculoFile);
-                    candidatoData.curriculo_url = await getDownloadURL(storageRef);
-                }
-
+                // LÓGICA DE UPLOAD REMOVIDA
+                
                 const candidatosCollection = collection(db, 'candidatos');
                 await addDoc(candidatosCollection, candidatoData);
                 
                 mostrarAlerta('Candidato cadastrado com sucesso!');
                 form.reset();
-                document.querySelector('.file-upload-label').textContent = 'Clique para selecionar o arquivo';
                 
-                // OTIMIZAÇÃO 2: Em vez de recarregar tudo, apenas incrementamos os contadores visíveis.
                 incrementarContador('totalCandidatos');
                 incrementarContador('candidatosHoje');
                 
             } catch (error) {
                 console.error('Erro ao cadastrar candidato:', error);
-                mostrarAlerta(`Erro ao cadastrar candidato: ${error.message}`, 'error');
+                mostrarAlerta(`Erro ao cadastrar candidato: ${error.message}. Verifique o console (F12) para detalhes.`, 'error');
             } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Cadastrar Candidato';
@@ -541,11 +504,8 @@
                 await addDoc(vagasCollection, vagaData);
                 mostrarAlerta('Vaga cadastrada com sucesso!');
                 form.reset();
-                
-                // OTIMIZAÇÃO 3: Incrementa o contador de vagas
                 incrementarContador('totalVagas');
-                
-                carregarVagas(); // Recarrega apenas a lista de vagas no dropdown
+                carregarVagas();
             } catch (error) {
                 console.error('Erro ao cadastrar vaga:', error);
                 mostrarAlerta(`Erro ao cadastrar vaga: ${error.message}`, 'error');
@@ -572,7 +532,7 @@
                 });
             } catch (error) {
                 console.error('Erro ao carregar vagas:', error);
-                mostrarAlerta('Erro ao carregar vagas. Pode ser necessário criar um índice no Firestore. Verifique o console de depuração (F12) para um link de criação.', 'error');
+                mostrarAlerta('Erro ao carregar vagas. Pode ser necessário criar um índice no Firestore. Verifique o console (F12).', 'error');
                 select.innerHTML = '<option value="">Erro ao carregar vagas</option>';
             }
         }
@@ -655,9 +615,7 @@
                 container.innerHTML = '<p style="text-align:center; padding: 20px;">Nenhum candidato encontrado.</p>';
                 return;
             }
-            container.innerHTML = candidatos.map(c => {
-                const dataCadastro = c.data_cadastro && c.data_cadastro.toDate ? c.data_cadastro.toDate().toLocaleDateString('pt-BR') : 'N/A';
-                return `
+            container.innerHTML = candidatos.map(c => `
                 <div class="candidato-card" data-id="${c.id}" data-nome="${c.nome}" data-cidade="${c.cidade}">
                     <div class="candidato-header">
                         <div class="candidato-nome">${c.nome}</div>
@@ -671,10 +629,9 @@
                     </div>
                     <div>
                         <button onclick="verDetalhes(event, '${c.id}')" class="btn btn-secondary">Ver Detalhes</button>
-                        ${c.curriculo_url ? `<a href="${c.curriculo_url}" target="_blank" class="btn">Baixar Currículo</a>` : ''}
-                    </div>
+                        </div>
                 </div>
-            `}).join('');
+            `).join('');
         }
         
         window.filtrarTodosCandidatos = function() {
@@ -716,8 +673,7 @@
                         <p><strong>Habilidades:</strong> ${data.skills ? data.skills.join(', ') : 'N/A'}</p>
                         <p><strong>Observações:</strong> ${data.observacoes || 'N/A'}</p>
                         <p><strong>Cadastrado em:</strong> ${dataCadastro}</p>
-                        ${data.curriculo_url ? `<br><a href="${data.curriculo_url}" target="_blank" class="btn">Baixar Currículo</a>` : ''}
-                    `;
+                        `;
                     document.getElementById('modalCandidato').classList.add('show');
                 } else {
                     throw new Error("Candidato não encontrado");
@@ -797,11 +753,6 @@
         }
 
         // Listeners e inicialização da página
-        document.getElementById('curriculo').addEventListener('change', (e) => {
-            const label = document.querySelector('.file-upload-label');
-            label.textContent = e.target.files.length > 0 ? e.target.files[0].name : 'Clique para selecionar o arquivo';
-        });
-
         window.onclick = (event) => {
             if (event.target == document.getElementById('modalCandidato')) fecharModal();
         };
