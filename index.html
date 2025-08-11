@@ -532,7 +532,7 @@
             }
         }
         
-        // FUNÇÃO DE BUSCA ATUALIZADA COM LÓGICA DE SCORE
+        // FUNÇÃO DE BUSCA FINAL COM LÓGICA DE RELEVÂNCIA OBRIGATÓRIA
         window.buscarCandidatos = async function() {
             const vagaId = document.getElementById('selectVaga').value;
             if (!vagaId) return mostrarAlerta('Selecione uma vaga primeiro.', 'error');
@@ -547,7 +547,6 @@
                 if (!vagaDoc.exists()) throw new Error("Vaga não encontrada!");
                 const vaga = vagaDoc.data();
                 
-                // Extrai palavras-chave do título da vaga para a busca
                 const palavrasChaveVaga = vaga.titulo.toLowerCase().split(' ').filter(p => p.length > 2);
 
                 // Passo 2: Puxar TODOS os candidatos para analisar no código
@@ -556,42 +555,47 @@
                 
                 let candidatosCompativeis = [];
 
-                // Passo 3: Analisar cada candidato e calcular um Score de Compatibilidade
+                // Passo 3: Analisar cada candidato e calcular o Score de forma corrigida
                 querySnapshot.forEach(doc => {
                     const candidato = { id: doc.id, ...doc.data() };
-                    let score = 0;
+                    let relevanceScore = 0; // Pontuação principal (obrigatória)
+                    let bonusScore = 0;     // Pontuação extra (opcional)
 
-                    // Critério 1: Match de Cidade (Peso: 100 pontos)
-                    if (candidato.cidade && vaga.cidade && candidato.cidade.toLowerCase() === vaga.cidade.toLowerCase()) {
-                        score += 100;
-                    }
-
-                    // Critério 2: Match de Experiência (Peso: 50 pontos)
-                    if ((candidato.experiencia_anos || 0) >= (vaga.experiencia_min_anos || 0)) {
-                        score += 50;
-                    }
-
-                    // Critério 3: Match de Cargo Desejado (Peso: 200 pontos por match)
+                    // --- CÁLCULO DA PONTUAÇÃO DE RELEVÂNCIA ---
+                    // Critério 1: Match de Cargo Desejado (Peso: 200 pontos)
                     if (candidato.cargo_desejado) {
                         const cargoCandidato = candidato.cargo_desejado.toLowerCase();
-                        // Se o cargo do candidato estiver no título da vaga
                         if (vaga.titulo.toLowerCase().includes(cargoCandidato)) {
-                            score += 200;
+                            relevanceScore += 200;
                         }
                     }
 
-                    // Critério 4: Match de Habilidades (Skills) (Peso: 150 pontos por skill que bater)
+                    // Critério 2: Match de Habilidades (Skills) (Peso: 150 pontos por skill)
                     if (candidato.skills && candidato.skills.length > 0) {
                         candidato.skills.forEach(skill => {
                             if (palavrasChaveVaga.includes(skill.toLowerCase())) {
-                                score += 150;
+                                relevanceScore += 150;
                             }
                         });
                     }
 
-                    // Adiciona o candidato à lista apenas se ele tiver alguma pontuação
-                    if (score > 0) {
-                        candidato.score = score;
+                    // --- VERIFICAÇÃO DE RELEVÂNCIA ---
+                    // Só continua se o candidato for minimamente relevante para a vaga
+                    if (relevanceScore > 0) {
+                        
+                        // --- CÁLCULO DA PONTUAÇÃO DE BÔNUS ---
+                        // Bônus por Cidade (Peso: 100 pontos)
+                        if (candidato.cidade && vaga.cidade && candidato.cidade.toLowerCase() === vaga.cidade.toLowerCase()) {
+                            bonusScore += 100;
+                        }
+
+                        // Bônus por Experiência (Peso: 50 pontos)
+                        if ((candidato.experiencia_anos || 0) >= (vaga.experiencia_min_anos || 0)) {
+                            bonusScore += 50;
+                        }
+
+                        // Soma tudo e adiciona na lista
+                        candidato.score = relevanceScore + bonusScore;
                         candidatosCompativeis.push(candidato);
                     }
                 });
@@ -599,7 +603,7 @@
                 // Passo 4: Ordenar a lista do maior para o menor score
                 candidatosCompativeis.sort((a, b) => b.score - a.score);
 
-                candidatosBusca = candidatosCompativeis; // Armazena para exportação
+                candidatosBusca = candidatosCompativeis; 
                 exibirCandidatos(candidatosCompativeis, 'resultadosBusca');
 
             } catch (error) {
