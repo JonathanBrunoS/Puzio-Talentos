@@ -413,9 +413,9 @@
     </div>
 
     <script type="module">
-        // CORREÇÃO: Removido 'getCount' das importações
+        // CORREÇÃO AQUI: Adicionamos 'Timestamp' para fazer a conversão de datas corretamente
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy, doc, getDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
         // ===================================================================
@@ -457,7 +457,6 @@
             }, 5000);
         }
 
-        // CORREÇÃO: Adicionamos a função ao 'window' para ser acessível pelo HTML
         window.showTab = function(tabName, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
@@ -468,7 +467,7 @@
         }
 
         // ===================================================================
-        // MANIPULAÇÃO DE FORMULÁRIOS E DADOS (MIGRADOS PARA FIREBASE)
+        // MANIPULAÇÃO DE FORMULÁRIOS E DADOS
         // ===================================================================
         document.getElementById('formCandidato').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -767,12 +766,14 @@
                 // Contagem de candidatos hoje
                 const hoje = new Date();
                 hoje.setHours(0, 0, 0, 0); 
-                const qHoje = query(candidatosCollection, where('data_cadastro', '>=', hoje));
+                // CORREÇÃO AQUI: Convertendo a data do JS para um Timestamp do Firestore
+                const qHoje = query(candidatosCollection, where('data_cadastro', '>=', Timestamp.fromDate(hoje)));
                 const candidatosHojeSnap = await getDocs(qHoje);
                 document.getElementById('candidatosHoje').textContent = candidatosHojeSnap.size;
 
             } catch (error) {
                 console.error('Erro ao atualizar estatísticas:', error);
+                mostrarAlerta('Erro ao carregar estatísticas. Pode ser necessário criar um índice no Firestore. Verifique o console (F12).', 'error');
             }
         }
 
