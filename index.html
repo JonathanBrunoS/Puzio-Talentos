@@ -413,7 +413,6 @@
     </div>
 
     <script type="module">
-        // CORREÇÃO AQUI: Adicionamos 'Timestamp' para fazer a conversão de datas corretamente
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy, doc, getDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
@@ -465,6 +464,15 @@
             if (tabName === 'buscar') carregarVagas();
             if (tabName === 'resultados') carregarTodosCandidatos();
         }
+        
+        // OTIMIZAÇÃO 1: Função para incrementar contadores na tela instantaneamente
+        function incrementarContador(elementId) {
+            const elemento = document.getElementById(elementId);
+            if (elemento) {
+                const valorAtual = parseInt(elemento.textContent, 10);
+                elemento.textContent = valorAtual + 1;
+            }
+        }
 
         // ===================================================================
         // MANIPULAÇÃO DE FORMULÁRIOS E DADOS
@@ -505,7 +513,11 @@
                 mostrarAlerta('Candidato cadastrado com sucesso!');
                 form.reset();
                 document.querySelector('.file-upload-label').textContent = 'Clique para selecionar o arquivo';
-                atualizarEstatisticas();
+                
+                // OTIMIZAÇÃO 2: Em vez de recarregar tudo, apenas incrementamos os contadores visíveis.
+                incrementarContador('totalCandidatos');
+                incrementarContador('candidatosHoje');
+                
             } catch (error) {
                 console.error('Erro ao cadastrar candidato:', error);
                 mostrarAlerta(`Erro ao cadastrar candidato: ${error.message}`, 'error');
@@ -529,8 +541,11 @@
                 await addDoc(vagasCollection, vagaData);
                 mostrarAlerta('Vaga cadastrada com sucesso!');
                 form.reset();
-                atualizarEstatisticas();
-                carregarVagas();
+                
+                // OTIMIZAÇÃO 3: Incrementa o contador de vagas
+                incrementarContador('totalVagas');
+                
+                carregarVagas(); // Recarrega apenas a lista de vagas no dropdown
             } catch (error) {
                 console.error('Erro ao cadastrar vaga:', error);
                 mostrarAlerta(`Erro ao cadastrar vaga: ${error.message}`, 'error');
@@ -655,7 +670,7 @@
                         <div class="info-item"><span class="info-label">Experiência:</span> ${c.experiencia_anos ?? 'N/A'} anos</div>
                     </div>
                     <div>
-                        <button onclick="verDetalhes('${c.id}')" class="btn btn-secondary">Ver Detalhes</button>
+                        <button onclick="verDetalhes(event, '${c.id}')" class="btn btn-secondary">Ver Detalhes</button>
                         ${c.curriculo_url ? `<a href="${c.curriculo_url}" target="_blank" class="btn">Baixar Currículo</a>` : ''}
                     </div>
                 </div>
@@ -677,7 +692,12 @@
         // ===================================================================
         // FUNÇÕES DO MODAL E EXPORTAÇÃO
         // ===================================================================
-        window.verDetalhes = async function(candidatoId) {
+        window.verDetalhes = async function(event, candidatoId) {
+            const button = event.target;
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'Carregando...';
+
             try {
                 const candidatoRef = doc(db, "candidatos", candidatoId);
                 const docSnap = await getDoc(candidatoRef);
@@ -705,6 +725,9 @@
             } catch (error) {
                 console.error("Erro ao ver detalhes:", error);
                 mostrarAlerta('Erro ao carregar detalhes do candidato.', 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = originalText;
             }
         }
 
@@ -754,19 +777,15 @@
                 const candidatosCollection = collection(db, 'candidatos');
                 const vagasCollection = collection(db, 'vagas');
                 
-                // Contagem total de candidatos
                 const totalCandidatosSnap = await getDocs(candidatosCollection);
                 document.getElementById('totalCandidatos').textContent = totalCandidatosSnap.size;
 
-                // Contagem de vagas abertas
                 const qVagas = query(vagasCollection, where('status', '==', 'aberta'));
                 const totalVagasSnap = await getDocs(qVagas);
                 document.getElementById('totalVagas').textContent = totalVagasSnap.size;
 
-                // Contagem de candidatos hoje
                 const hoje = new Date();
                 hoje.setHours(0, 0, 0, 0); 
-                // CORREÇÃO AQUI: Convertendo a data do JS para um Timestamp do Firestore
                 const qHoje = query(candidatosCollection, where('data_cadastro', '>=', Timestamp.fromDate(hoje)));
                 const candidatosHojeSnap = await getDocs(qHoje);
                 document.getElementById('candidatosHoje').textContent = candidatosHojeSnap.size;
