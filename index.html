@@ -8,23 +8,13 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
-    <!-- SCRIPT DO GTM AQUI DENTRO DO HEAD -->
-    <!-- Substituir GTM-XXXXXXX pelo ID do cliente -->
-    <!--
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
-    -->
-
     <style>
         /* Paleta de Cores Extraída da Identidade Visual */
         :root {
-            --bg-color: #94a78a; /* Verde Sálvia do Fundo */
+            --bg-color: #94a78a; 
             --text-color: #ffffff;
-            --primary-color: #2b3b2b; /* Verde Escuro da Logo */
-            --card-overlay: rgba(43, 59, 43, 0.7); /* Overlay escuro usando a cor da marca */
+            --primary-color: #2b3b2b; 
+            --card-overlay: rgba(43, 59, 43, 0.7); 
         }
 
         * {
@@ -44,7 +34,7 @@
             padding: 40px 20px;
         }
 
-        /* Cabeçalho do Perfil - Ajustado para Mobile */
+        /* Cabeçalho do Perfil */
         .profile-section {
             text-align: center;
             margin-bottom: 30px;
@@ -52,13 +42,12 @@
             max-width: 400px;
         }
 
-        /* Correção da Logo */
         .profile-img-container {
             width: 110px;
             height: 110px;
             margin: 0 auto 15px auto;
             border-radius: 50%;
-            background-color: var(--primary-color); /* Fundo igual ao da logo para não dar contraste nos cantos */
+            background-color: var(--primary-color); 
             border: 3px solid #ffffff;
             overflow: hidden;
             display: flex;
@@ -69,8 +58,8 @@
         .profile-img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Garante que a logo inteira apareça sem cortes */
-            transform: scale(1.1); /* Dá um leve zoom para tirar bordas indesejadas, ajuste se necessário */
+            object-fit: contain; 
+            transform: scale(1.1); 
         }
 
         .profile-title {
@@ -105,7 +94,7 @@
             justify-content: flex-end;
             text-decoration: none;
             color: white;
-            height: 140px; /* Altura levemente reduzida para caber melhor na primeira dobra do mobile */
+            height: 140px; 
             border-radius: 16px;
             padding: 20px;
             overflow: hidden;
@@ -118,7 +107,7 @@
             transform: scale(0.98);
         }
 
-        /* Imagens de fundo dos cards - Substitua os links pelas imagens 1000x320 que você criar */
+        /* Imagens de fundo dos cards */
         .card-bg {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -127,7 +116,8 @@
             z-index: 1;
         }
 
-        .bg-1 { background-image: url('URL_DA_SUA_IMAGEM_YOUTUBE_1000x320'); background-color: var(--primary-color); }
+        /* IMAGEM DO YOUTUBE INSERIDA AQUI */
+        .bg-1 { background-image: url('https://i.ibb.co/k6SqFVVz/Design-sem-nome-2.png'); background-color: var(--primary-color); }
         .bg-2 { background-image: url('URL_DA_SUA_IMAGEM_FORMULARO_1000x320'); background-color: var(--primary-color); }
         .bg-3 { background-image: url('URL_DA_SUA_IMAGEM_WHATSAPP_1000x320'); background-color: var(--primary-color); }
 
@@ -179,15 +169,8 @@
 </head>
 <body>
 
-    <!-- NOSCRIPT DO GTM -->
-    <!--
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    -->
-
     <div class="profile-section">
         <div class="profile-img-container">
-            <!-- URL da logo fornecida -->
             <img src="https://i.ibb.co/YBbv2Gsj/image.png" alt="Logo Orgânica Delivery" class="profile-img">
         </div>
         <h1 class="profile-title">@organica.delivery_</h1>
@@ -231,7 +214,6 @@
 
     </div>
 
-    <!-- Script de Rastreamento (Envia dados para o GTM) -->
     <script>
         function trackClick(nomeDoEvento) {
             window.dataLayer = window.dataLayer || [];
