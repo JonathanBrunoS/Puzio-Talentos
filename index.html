@@ -2,646 +2,232 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banco de Talentos PUZIO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-width=1.0">
+    <title>Orgânica Delivery | Links</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- COLOQUE O SEU SCRIPT DO GTM AQUI DENTRO DO HEAD -->
+    <!-- Exemplo:
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+    -->
+
     <style>
-        /* Reset e configurações base */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Variáveis de Cores (Fácil de alterar para a identidade visual do cliente) */
         :root {
-            --primary-color: #1e40af; --primary-dark: #1e3a8a; --primary-light: #3b82f6;
-            --secondary-color: #f59e0b; --accent-color: #10b981; --danger-color: #ef4444;
-            --success-color: #10b981; --gray-50: #f9fafb; --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb; --gray-300: #d1d5db; --gray-400: #9ca3af;
-            --gray-500: #6b7280; --gray-600: #4b5563; --gray-700: #374151;
-            --gray-800: #1f2937; --gray-900: #111827; --white: #ffffff;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05); --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            --border-radius: 12px; --border-radius-lg: 16px; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --bg-color: #0f1115; /* Fundo escuro */
+            --text-color: #ffffff;
+            --primary-color: #2ECC71; /* Verde Orgânico - Altere para a cor exata da logo */
+            --card-overlay: rgba(0, 0, 0, 0.6); /* Escurece a imagem de fundo do card */
         }
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; color: var(--gray-800); line-height: 1.6; font-size: 16px; }
-        .main-container { min-height: 100vh; padding: 2rem 1rem; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        .header { background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--border-radius-lg); padding: 3rem 2rem; margin-bottom: 2rem; text-align: center; box-shadow: var(--shadow-xl); position: relative; overflow: hidden; }
-        .header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color)); }
-        .header-content { position: relative; z-index: 2; }
-        .header h1 { font-size: 3.5rem; font-weight: 700; background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem; letter-spacing: -0.02em; }
-        .header p { font-size: 1.25rem; color: var(--gray-600); font-weight: 400; max-width: 600px; margin: 0 auto; }
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-card { background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--border-radius); padding: 2rem; text-align: center; box-shadow: var(--shadow-lg); transition: var(--transition); position: relative; overflow: hidden; }
-        .stat-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-xl); }
-        .stat-icon { width: 60px; height: 60px; margin: 0 auto 1rem; background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; }
-        .stat-number { font-size: 2.5rem; font-weight: 700; color: var(--gray-800); margin-bottom: 0.5rem; }
-        .stat-label { color: var(--gray-600); font-weight: 500; font-size: 1rem; }
-        .tabs-container { background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg); margin-bottom: 2rem; overflow: hidden; }
-        .tabs { display: flex; background: transparent; border-bottom: 1px solid var(--gray-200); }
-        .tab-button { flex: 1; padding: 1.25rem 1.5rem; background: transparent; border: none; cursor: pointer; font-size: 1rem; font-weight: 600; color: var(--gray-600); transition: var(--transition); position: relative; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        .tab-button::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); transform: scaleX(0); transition: var(--transition); }
-        .tab-button:hover { background: var(--gray-50); color: var(--primary-color); }
-        .tab-button.active { color: var(--primary-color); background: var(--gray-50); }
-        .tab-button.active::before { transform: scaleX(1); }
-        .tab-content { display: none; padding: 2.5rem; }
-        .tab-content.active { display: block; animation: fadeIn 0.5s ease-out; }
-        .tab-content h2 { font-size: 2rem; font-weight: 700; color: var(--gray-800); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem; }
-        .tab-content h2::before { content: ''; width: 4px; height: 2rem; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); border-radius: 2px; }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700); font-size: 0.95rem; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 1rem 1.25rem; border: 2px solid var(--gray-200); border-radius: var(--border-radius); font-size: 1rem; transition: var(--transition); background: var(--white); font-family: inherit; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1); }
-        .form-group textarea { resize: vertical; min-height: 120px; }
-        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 1rem 2rem; border: none; border-radius: var(--border-radius); cursor: pointer; font-size: 1rem; font-weight: 600; font-family: inherit; transition: var(--transition); text-decoration: none; position: relative; overflow: hidden; margin-right: 0.75rem; margin-bottom: 0.75rem; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); color: white; box-shadow: var(--shadow); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-        .btn-secondary { background: linear-gradient(135deg, var(--gray-600), var(--gray-500)); color: white; box-shadow: var(--shadow); }
-        .btn-secondary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-        .btn-danger { background: linear-gradient(135deg, var(--danger-color), #dc2626); color: white; box-shadow: var(--shadow); }
-        .btn-danger:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-        .card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--border-radius); padding: 1.5rem; margin-bottom: 1rem; transition: var(--transition); position: relative; overflow: hidden; }
-        .card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); border-color: var(--primary-color); }
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem; }
-        .card-title { font-size: 1.25rem; font-weight: 700; color: var(--gray-800); margin: 0; }
-        .score-badge { padding: 0.5rem 1rem; border-radius: 50px; font-weight: 700; font-size: 0.875rem; color: white; box-shadow: var(--shadow); transition: var(--transition); }
-        .score-badge:hover { transform: scale(1.05); }
-        .score-high { background: linear-gradient(135deg, var(--success-color), #059669); }
-        .score-medium { background: linear-gradient(135deg, var(--primary-light), var(--primary-color)); }
-        .score-low { background: linear-gradient(135deg, var(--gray-500), var(--gray-600)); }
-        .card-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
-        .info-item { font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; }
-        .info-label { font-weight: 600; color: var(--gray-600); }
-        .info-value { color: var(--gray-800); }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); align-items: center; justify-content: center; }
-        .modal.show { display: flex; }
-        .modal-content { background: var(--white); padding: 2rem; border-radius: var(--border-radius-lg); width: 90%; max-width: 700px; max-height: 80vh; overflow-y: auto; position: relative; box-shadow: var(--shadow-xl); animation: modalSlideIn 0.3s ease-out; }
-        @keyframes modalSlideIn { from { opacity: 0; transform: translateY(-50px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .close { position: absolute; top: 1rem; right: 1rem; color: var(--gray-400); font-size: 1.5rem; font-weight: bold; cursor: pointer; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: var(--transition); }
-        .close:hover { background: var(--gray-100); color: var(--gray-600); }
-        .alert { position: fixed; top: 2rem; right: 2rem; padding: 1rem 1.5rem; border-radius: var(--border-radius); font-weight: 500; z-index: 2000; box-shadow: var(--shadow-lg); opacity: 0; transform: translateX(100px); transition: var(--transition); max-width: 400px; display: flex; align-items: center; gap: 0.75rem; }
-        .alert.show { opacity: 1; transform: translateX(0); }
-        .alert-success { background: var(--success-color); color: white; }
-        .alert-error { background: var(--danger-color); color: white; }
-        .loading { display: none; text-align: center; padding: 3rem; }
-        .spinner { width: 50px; height: 50px; border: 4px solid var(--gray-200); border-top: 4px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 768px) { .main-container { padding: 1rem; } .header { padding: 2rem 1.5rem; } .header h1 { font-size: 2.5rem; } .tabs { flex-direction: column; } .tab-button { text-align: left; justify-content: flex-start; } .form-row { grid-template-columns: 1fr; } .card-info { grid-template-columns: 1fr; } .card-header { flex-direction: column; align-items: flex-start; } .stats { grid-template-columns: 1fr; } .tab-content { padding: 1.5rem; } }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* Cabeçalho do Perfil */
+        .profile-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            object-fit: cover;
+            margin-bottom: 15px;
+            /* AQUI VOCÊ COLOCA A URL DA LOGO */
+            content: url('https://i.ibb.co/YBbv2Gsj/image.png'); 
+        }
+
+        .profile-title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+
+        .profile-subtitle {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            margin-top: 5px;
+        }
+
+        /* Container dos Cards */
+        .links-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Estilo dos Cards */
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            text-decoration: none;
+            color: white;
+            height: 160px;
+            border-radius: 16px;
+            padding: 20px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(46, 204, 113, 0.2);
+        }
+
+        /* Borda customizada por card (seguindo sua referência) */
+        .card-1 { border-color: var(--primary-color); }
+        .card-2 { border-color: #25D366; } /* Verde WhatsApp */
+        .card-3 { border-color: #EA1D2C; } /* Vermelho iFood, se houver */
+
+        /* Imagens de fundo dos cards */
+        .card-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        /* Coloque as imagens de fundo de cada card aqui */
+        .bg-1 { background-image: url('https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=600&auto=format&fit=crop'); }
+        .bg-2 { background-image: url('https://images.unsplash.com/photo-1611262588024-d12430b98920?q=80&w=600&auto=format&fit=crop'); }
+        .bg-3 { background-image: url('https://images.unsplash.com/photo-1526367790999-0150786686a2?q=80&w=600&auto=format&fit=crop'); }
+
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 100%);
+            z-index: 2;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 5px;
+            width: 80%;
+        }
+
+        .card-subtitle {
+            font-size: 0.75rem;
+            color: #d1d1d1;
+            margin-bottom: 15px;
+            max-width: 70%;
+        }
+
+        .btn-acessar {
+            align-self: flex-end;
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Variações de cor dos botões */
+        .btn-wpp { background-color: #25D366; color: #000; }
+        .btn-ifood { background-color: #EA1D2C; }
+        
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <div class="container">
-            <header class="header">
-                <div class="header-content">
-                    <h1><i class="fas fa-users"></i> Banco de Talentos PUZIO</h1>
-                    <p>Sistema Inteligente de Gestão de Candidatos e Oportunidades</p>
-                </div>
-            </header>
 
-            <section class="stats">
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-user-tie"></i></div>
-                    <div class="stat-number" id="totalCandidatos">0</div>
-                    <div class="stat-label">Total de Candidatos</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
-                    <div class="stat-number" id="totalVagas">0</div>
-                    <div class="stat-label">Vagas Abertas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
-                    <div class="stat-number" id="candidatosHoje">0</div>
-                    <div class="stat-label">Candidatos Hoje</div>
-                </div>
-            </section>
+    <!-- COLOQUE O NOSCRIPT DO GTM AQUI LOGO APÓS ABRIR O BODY -->
 
-            <main class="tabs-container">
-                <nav class="tabs">
-                    <button class="tab-button active" onclick="showTab('candidatos', this)"><i class="fas fa-user-plus"></i> Cadastrar Candidato</button>
-                    <button class="tab-button" onclick="showTab('vagas', this)"><i class="fas fa-plus-circle"></i> Cadastrar Vaga</button>
-                    <button class="tab-button" onclick="showTab('gerenciarVagas', this)"><i class="fas fa-cogs"></i> Gerenciar Vagas</button>
-                    <button class="tab-button" onclick="showTab('buscar', this)"><i class="fas fa-search"></i> Buscar por Vaga</button>
-                    <button class="tab-button" onclick="showTab('resultados', this)"><i class="fas fa-list"></i> Todos os Candidatos</button>
-                </nav>
-
-                <div id="alert-container"></div>
-
-                <section id="candidatos" class="tab-content active">
-                    <h2><i class="fas fa-user-plus"></i> Cadastrar Novo Candidato</h2>
-                    <form id="formCandidato">
-                        <div class="form-row">
-                            <div class="form-group"><label for="nome"><i class="fas fa-user"></i> Nome Completo *</label><input type="text" id="nome" name="nome" required></div>
-                            <div class="form-group"><label for="telefone"><i class="fas fa-phone"></i> Telefone *</label><input type="tel" id="telefone" name="telefone" required placeholder="(11) 99999-9999"></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label for="email"><i class="fas fa-envelope"></i> E-mail</label><input type="email" id="email" name="email"></div>
-                            <div class="form-group"><label for="cidade"><i class="fas fa-map-marker-alt"></i> Cidade *</label><input type="text" id="cidade" name="cidade" required></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label for="cargo_desejado"><i class="fas fa-briefcase"></i> Cargo Desejado *</label><input type="text" id="cargo_desejado" name="cargo_desejado" required placeholder="Ex: Motorista, Operador de Empilhadeira"></div>
-                            <div class="form-group"><label for="experiencia_anos"><i class="fas fa-clock"></i> Experiência (anos)</label><input type="number" id="experiencia_anos" name="experiencia_anos" min="0" max="50"></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label for="disponibilidade"><i class="fas fa-calendar-check"></i> Disponibilidade</label><select id="disponibilidade" name="disponibilidade"><option value="">Selecione...</option><option value="imediato">Imediato</option><option value="15 dias">15 dias</option><option value="30 dias">30 dias</option><option value="a combinar">A combinar</option></select></div>
-                            <div class="form-group"><label for="skills"><i class="fas fa-tags"></i> Habilidades/Palavras-chave</label><input type="text" id="skills" name="skills" placeholder="Ex: motorista, empilhadeira (separar por vírgula)"></div>
-                        </div>
-                        <div class="form-group"><label for="observacoes"><i class="fas fa-comment-alt"></i> Observações</label><textarea id="observacoes" name="observacoes" placeholder="Informações adicionais..."></textarea></div>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Cadastrar Candidato</button>
-                    </form>
-                </section>
-
-                <section id="vagas" class="tab-content">
-                    <h2><i class="fas fa-plus-circle"></i> Cadastrar Nova Vaga</h2>
-                    <form id="formVaga">
-                        <div class="form-row">
-                            <div class="form-group"><label for="titulo"><i class="fas fa-briefcase"></i> Título da Vaga *</label><input type="text" name="titulo" required placeholder="Ex: Motorista de Caminhão"></div>
-                            <div class="form-group"><label for="cidadeVaga"><i class="fas fa-map-marker-alt"></i> Cidade *</label><input type="text" name="cidade" required></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label for="tipo_contrato"><i class="fas fa-file-contract"></i> Tipo de Contrato</label><select name="tipo_contrato"><option value="">Selecione...</option><option value="CLT">CLT</option><option value="PJ">PJ</option><option value="Temporário">Temporário</option><option value="Estágio">Estágio</option></select></div>
-                            <div class="form-group"><label for="experiencia_min_anos"><i class="fas fa-clock"></i> Experiência Mínima (anos)</label><input type="number" name="experiencia_min_anos" min="0" max="20" value="0"></div>
-                        </div>
-                        <div class="form-group"><label for="descricao"><i class="fas fa-align-left"></i> Descrição da Vaga</label><textarea name="descricao" placeholder="Descreva as principais atividades..."></textarea></div>
-                        <div class="form-group"><label for="beneficios"><i class="fas fa-gift"></i> Benefícios</label><textarea name="beneficios" placeholder="Ex: Vale transporte, vale refeição..."></textarea></div>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Cadastrar Vaga</button>
-                    </form>
-                </section>
-                
-                <section id="gerenciarVagas" class="tab-content">
-                    <h2><i class="fas fa-cogs"></i> Gerenciar Vagas Cadastradas</h2>
-                    <div id="loadingGerenciarVagas" class="loading"><div class="spinner"></div><p>Carregando vagas...</p></div>
-                    <div id="listaVagasGerenciar"></div>
-                </section>
-
-                <section id="buscar" class="tab-content">
-                    <h2><i class="fas fa-search"></i> Buscar Candidatos por Vaga</h2>
-                    <div class="form-group"><label for="selectVaga"><i class="fas fa-briefcase"></i> Selecione uma Vaga</label><select id="selectVaga"><option value="">Carregando vagas...</option></select></div>
-                    <button onclick="buscarCandidatos()" class="btn btn-primary"><i class="fas fa-search"></i> Buscar Candidatos</button>
-                    <button onclick="exportarCSV()" class="btn btn-secondary"><i class="fas fa-download"></i> Exportar Busca</button>
-                    <div id="loadingBusca" class="loading"><div class="spinner"></div><p>Buscando candidatos...</p></div>
-                    <div id="resultadosBusca"></div>
-                </section>
-
-                <section id="resultados" class="tab-content">
-                    <h2><i class="fas fa-list"></i> Todos os Candidatos</h2>
-                    <div class="form-row">
-                        <div class="form-group"><label for="filtroNome"><i class="fas fa-filter"></i> Filtrar por Nome</label><input type="text" id="filtroNome" oninput="filtrarTodosCandidatos()" placeholder="Digite o nome..."></div>
-                        <div class="form-group"><label for="filtroCidade"><i class="fas fa-filter"></i> Filtrar por Cidade</label><input type="text" id="filtroCidade" oninput="filtrarTodosCandidatos()" placeholder="Digite a cidade..."></div>
-                    </div>
-                    <button onclick="exportarTodosCSV()" class="btn btn-secondary"><i class="fas fa-download"></i> Exportar Todos</button>
-                    <div id="loadingTodos" class="loading"><div class="spinner"></div><p>Carregando candidatos...</p></div>
-                    <div id="listaTodosCandidatos"></div>
-                </section>
-            </main>
-        </div>
+    <div class="profile-section">
+        <img src="" alt="Logo Orgânica Delivery" class="profile-img">
+        <h1 class="profile-title">Orgânica Delivery</h1>
+        <p class="profile-subtitle">O melhor delivery saudável da região 🍃</p>
     </div>
 
-    <div id="modalCandidato" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="fecharModal()">&times;</span>
-            <div id="conteudoModal"></div>
-        </div>
+    <div class="links-container">
+        
+        <!-- CARD 1: CARDÁPIO PRÓPRIO -->
+        <a href="LINK_DO_CARDAPIO_AQUI" class="card card-1" target="_blank" onclick="trackClick('clique_cardapio_proprio')">
+            <div class="card-bg bg-1"></div>
+            <div class="overlay"></div>
+            <div class="card-content">
+                <h2 class="card-title">Faça seu Pedido</h2>
+                <p class="card-subtitle">Acesse nosso cardápio digital e ganhe descontos exclusivos.</p>
+                <div class="btn-acessar">Acessar &rarr;</div>
+            </div>
+        </a>
+
+        <!-- CARD 2: WHATSAPP -->
+        <a href="LINK_DO_WHATSAPP_AQUI" class="card card-2" target="_blank" onclick="trackClick('clique_whatsapp')">
+            <div class="card-bg bg-2"></div>
+            <div class="overlay"></div>
+            <div class="card-content">
+                <h2 class="card-title">Fale Conosco</h2>
+                <p class="card-subtitle">Dúvidas ou pedidos grandes? Chame no WhatsApp.</p>
+                <div class="btn-acessar btn-wpp">Acessar &rarr;</div>
+            </div>
+        </a>
+
+        <!-- CARD 3: IFOOD / OUTRO -->
+        <a href="LINK_3_AQUI" class="card card-3" target="_blank" onclick="trackClick('clique_ifood')">
+            <div class="card-bg bg-3"></div>
+            <div class="overlay"></div>
+            <div class="card-content">
+                <h2 class="card-title">Estamos no iFood</h2>
+                <p class="card-subtitle">Peça também pelo aplicativo do iFood.</p>
+                <div class="btn-acessar btn-ifood">Acessar &rarr;</div>
+            </div>
+        </a>
+
     </div>
 
-    <div id="modalEdicaoVaga" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="fecharModalEdicao()">&times;</span>
-            <h2><i class="fas fa-edit"></i> Editar Vaga</h2>
-            <div id="conteudoModalEdicao"></div>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy, doc, getDoc, Timestamp, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBlW0GeM48yYKHSYuDLATjNfSw-XtUVbRI",
-            authDomain: "puzio-banco-talentos.firebaseapp.com",
-            projectId: "puzio-banco-talentos",
-            storageBucket: "puzio-banco-talentos.appspot.com",
-            messagingSenderId: "27472220237",
-            appId: "1:27472220237:web:22de13fdc6aea6b8ef8c04"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        
-        let candidatosBusca = [];
-        let todosOsCandidatos = [];
-
-        function mostrarAlerta(mensagem, tipo = 'success') {
-            const container = document.getElementById('alert-container');
-            const alerta = document.createElement('div');
-            alerta.className = `alert alert-${tipo}`;
-            alerta.innerHTML = `<i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i> ${mensagem}`;
-            container.appendChild(alerta);
-            setTimeout(() => alerta.classList.add('show'), 10);
-            setTimeout(() => {
-                alerta.classList.remove('show');
-                setTimeout(() => alerta.remove(), 300);
-            }, 5000);
-        }
-
-        window.showTab = function(tabName, element) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            const targetTab = document.getElementById(tabName);
-            targetTab.classList.add('active');
-            if(element) element.classList.add('active');
-            if (tabName === 'buscar') carregarVagas();
-            if (tabName === 'resultados') carregarTodosCandidatos();
-            if (tabName === 'gerenciarVagas') carregarVagasParaGerenciar();
-        }
-        
-        function incrementarContador(elementId, valor = 1) {
-            const elemento = document.getElementById(elementId);
-            if (elemento) {
-                const valorAtual = parseInt(elemento.textContent, 10);
-                elemento.textContent = valorAtual + valor;
-            }
-        }
-
-        // ===================================================================
-        // MANIPULAÇÃO DE FORMULÁRIOS E DADOS
-        // ===================================================================
-        document.getElementById('formCandidato').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const submitButton = form.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Enviando...';
-
-            try {
-                const candidatoData = Object.fromEntries(new FormData(form).entries());
-                // CORREÇÃO CRÍTICA: Salva skills como array
-                candidatoData.skills = candidatoData.skills ? candidatoData.skills.split(',').map(s => s.trim().toLowerCase()) : [];
-                candidatoData.experiencia_anos = parseInt(candidatoData.experiencia_anos, 10) || 0;
-                candidatoData.data_cadastro = serverTimestamp();
-                
-                await addDoc(collection(db, 'candidatos'), candidatoData);
-                mostrarAlerta('Candidato cadastrado com sucesso!', 'success');
-                form.reset();
-                incrementarContador('totalCandidatos');
-                incrementarContador('candidatosHoje');
-            } catch (error) {
-                console.error('Erro ao cadastrar candidato:', error);
-                mostrarAlerta(`Erro ao cadastrar candidato: ${error.message}.`, 'error');
-            } finally {
-                submitButton.disabled = false;
-                submitButton.innerHTML = '<i class="fas fa-save"></i> Cadastrar Candidato';
-            }
-        });
-        
-        document.getElementById('formVaga').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const submitButton = form.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Enviando...';
-
-            try {
-                const vagaData = Object.fromEntries(new FormData(form).entries());
-                vagaData.experiencia_min_anos = parseInt(vagaData.experiencia_min_anos, 10) || 0;
-                vagaData.status = 'aberta'; // Mantido para compatibilidade, mas o novo campo é 'ativa'
-                vagaData.ativa = true; // Novo campo para gerenciar estado da vaga
-                vagaData.data_criacao = serverTimestamp();
-                
-                await addDoc(collection(db, 'vagas'), vagaData);
-                mostrarAlerta('Vaga cadastrada com sucesso!', 'success');
-                form.reset();
-                incrementarContador('totalVagas');
-                carregarVagas();
-            } catch (error) {
-                console.error('Erro ao cadastrar vaga:', error);
-                mostrarAlerta(`Erro ao cadastrar vaga: ${error.message}`, 'error');
-            } finally {
-                submitButton.disabled = false;
-                submitButton.innerHTML = '<i class="fas fa-save"></i> Cadastrar Vaga';
-            }
-        });
-        
-        // ===================================================================
-        // FUNÇÕES DE BUSCA E EXIBIÇÃO
-        // ===================================================================
-        async function carregarVagas() {
-            const select = document.getElementById('selectVaga');
-            try {
-                // Agora filtra por 'ativa' == true
-                const q = query(collection(db, 'vagas'), where('ativa', '==', true), orderBy('data_criacao', 'desc'));
-                const querySnapshot = await getDocs(q);
-                
-                select.innerHTML = '<option value="">Selecione uma vaga...</option>';
-                querySnapshot.forEach(doc => {
-                    const vaga = doc.data();
-                    const option = document.createElement('option');
-                    option.value = doc.id;
-                    option.textContent = `${vaga.titulo} - ${vaga.cidade}`;
-                    select.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Erro ao carregar vagas:', error);
-            }
-        }
-        
-        window.buscarCandidatos = async function() {
-            const vagaId = document.getElementById('selectVaga').value;
-            if (!vagaId) return mostrarAlerta('Selecione uma vaga primeiro.', 'error');
-            
-            document.getElementById('loadingBusca').style.display = 'block';
-            document.getElementById('resultadosBusca').innerHTML = '';
-            
-            try {
-                const vagaRef = doc(db, 'vagas', vagaId);
-                const vagaDoc = await getDoc(vagaRef);
-                if (!vagaDoc.exists()) throw new Error("Vaga não encontrada!");
-                const vaga = vagaDoc.data();
-                
-                const palavrasChaveVaga = vaga.titulo.toLowerCase().split(' ').filter(p => p.length > 2);
-                const candidatosCollection = collection(db, 'candidatos');
-                const querySnapshot = await getDocs(candidatosCollection);
-                
-                let candidatosCompativeis = [];
-
-                querySnapshot.forEach(doc => {
-                    const candidato = { id: doc.id, ...doc.data() };
-                    let relevanceScore = 0;
-                    let bonusScore = 0;
-
-                    if (candidato.cargo_desejado) {
-                         const cargoCandidato = candidato.cargo_desejado.toLowerCase();
-                         if (vaga.titulo.toLowerCase().includes(cargoCandidato)) relevanceScore += 200;
-                    }
-
-                    // LÓGICA CORRIGIDA para usar o array de skills
-                    if (candidato.skills && Array.isArray(candidato.skills)) {
-                        candidato.skills.forEach(skill => {
-                            if (palavrasChaveVaga.includes(skill.toLowerCase())) relevanceScore += 150;
-                        });
-                    }
-
-                    if (relevanceScore > 0) {
-                        if (candidato.cidade && vaga.cidade && candidato.cidade.toLowerCase() === vaga.cidade.toLowerCase()) bonusScore += 100;
-                        if ((candidato.experiencia_anos || 0) >= (vaga.experiencia_min_anos || 0)) bonusScore += 50;
-                        candidato.score = relevanceScore + bonusScore;
-                        candidatosCompativeis.push(candidato);
-                    }
-                });
-                
-                candidatosCompativeis.sort((a, b) => b.score - a.score);
-                candidatosBusca = candidatosCompativeis; 
-                exibirCandidatos(candidatosCompativeis, 'resultadosBusca');
-            } catch (error) {
-                console.error('Erro na busca:', error);
-                mostrarAlerta('Ocorreu um erro ao buscar os candidatos.', 'error');
-            } finally {
-                document.getElementById('loadingBusca').style.display = 'none';
-            }
-        }
-
-        async function carregarTodosCandidatos() {
-            const container = document.getElementById('listaTodosCandidatos');
-            const loading = document.getElementById('loadingTodos');
-            loading.style.display = 'block';
-            container.innerHTML = '';
-            try {
-                const q = query(collection(db, 'candidatos'), orderBy('data_cadastro', 'desc'));
-                const querySnapshot = await getDocs(q);
-                todosOsCandidatos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                exibirCandidatos(todosOsCandidatos, 'listaTodosCandidatos');
-            } catch (error) {
-                console.error('Erro ao carregar todos os candidatos:', error);
-            } finally {
-                loading.style.display = 'none';
-            }
-        }
-
-        function exibirCandidatos(candidatos, containerId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = ''; 
-            if (candidatos.length === 0) {
-                container.innerHTML = `<p style="text-align: center; color: var(--gray-500); padding: 2rem;">${containerId === 'resultadosBusca' ? 'Nenhum candidato compatível encontrado.' : 'Nenhum candidato cadastrado.'}</p>`;
-                return;
-            }
-            candidatos.forEach(candidato => {
-                let badgeClass = 'score-low';
-                // A pontuação agora se chama 'score' novamente
-                if (candidato.score >= 400) badgeClass = 'score-high';
-                else if (candidato.score >= 250) badgeClass = 'score-medium';
-                
-                const cardElement = document.createElement('div');
-                cardElement.className = 'card fade-in';
-                cardElement.setAttribute('data-id', candidato.id);
-
-                cardElement.innerHTML = `
-                    <div class="card-header">
-                        <h3 class="card-title">${candidato.nome}</h3>
-                        ${candidato.score !== undefined ? `<span class="score-badge ${badgeClass}">Score: ${candidato.score}</span>` : ''}
-                    </div>
-                    <div class="card-info">
-                        <div class="info-item"><i class="fas fa-briefcase" title="Cargo"></i><span class="info-value">${candidato.cargo_desejado}</span></div>
-                        <div class="info-item"><i class="fas fa-map-marker-alt" title="Cidade"></i><span class="info-value">${candidato.cidade}</span></div>
-                        <div class="info-item"><i class="fas fa-phone" title="Telefone"></i><span class="info-value">${candidato.telefone}</span></div>
-                        <div class="info-item"><i class="fas fa-clock" title="Experiência"></i><span class="info-value">${candidato.experiencia_anos || 0} anos</span></div>
-                    </div>
-                    <div style="margin-top: 1rem;">
-                        <button onclick="verDetalhes(event, '${candidato.id}')" class="btn btn-secondary"><i class="fas fa-eye"></i> Ver Detalhes</button>
-                        <button onclick="marcarContratado('${candidato.id}')" class="btn btn-danger"><i class="fas fa-user-check"></i> Contratado/Remover</button>
-                    </div>
-                `;
-                container.appendChild(cardElement);
+    <!-- Script de Rastreamento (Envia dados para o GTM) -->
+    <script>
+        // Função para disparar eventos para o DataLayer do GTM
+        function trackClick(nomeDoEvento) {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': nomeDoEvento
             });
+            console.log("Evento disparado para o GTM: " + nomeDoEvento);
         }
-        
-        window.filtrarTodosCandidatos = function() {
-            const filtroNome = document.getElementById('filtroNome').value.toLowerCase();
-            const filtroCidade = document.getElementById('filtroCidade').value.toLowerCase();
-            const candidatosFiltrados = todosOsCandidatos.filter(c => 
-                c.nome.toLowerCase().includes(filtroNome) && c.cidade.toLowerCase().includes(filtroCidade)
-            );
-            exibirCandidatos(candidatosFiltrados, 'listaTodosCandidatos');
-        }
-
-        // ===================================================================
-        // GERENCIAMENTO DE VAGAS E CANDIDATOS
-        // ===================================================================
-        async function carregarVagasParaGerenciar() {
-            const container = document.getElementById('listaVagasGerenciar');
-            const loading = document.getElementById('loadingGerenciarVagas');
-            loading.style.display = 'block';
-            container.innerHTML = '';
-            try {
-                const q = query(collection(db, 'vagas'), orderBy('data_criacao', 'desc'));
-                const querySnapshot = await getDocs(q);
-                if (querySnapshot.empty) {
-                    container.innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">Nenhuma vaga cadastrada.</p>';
-                    return;
-                }
-                querySnapshot.forEach(doc => {
-                    const vaga = { id: doc.id, ...doc.data() };
-                    const cardElement = document.createElement('div');
-                    cardElement.className = 'card fade-in';
-                    cardElement.innerHTML = `
-                        <div class="card-header">
-                            <h3 class="card-title">${vaga.titulo}</h3>
-                            <span class="score-badge ${vaga.ativa ? 'score-high' : 'score-low'}">${vaga.ativa ? 'Ativa' : 'Inativa'}</span>
-                        </div>
-                        <div class="card-info">
-                            <div class="info-item"><i class="fas fa-map-marker-alt"></i><span class="info-value">${vaga.cidade}</span></div>
-                            <div class="info-item"><i class="fas fa-file-contract"></i><span class="info-value">${vaga.tipo_contrato || 'N/A'}</span></div>
-                        </div>
-                        <div style="margin-top: 1rem;">
-                            <button onclick="abrirModalEdicaoVaga('${vaga.id}')" class="btn btn-secondary"><i class="fas fa-edit"></i> Editar</button>
-                            <button onclick="excluirVaga('${vaga.id}')" class="btn btn-danger"><i class="fas fa-trash"></i> Excluir</button>
-                        </div>
-                    `;
-                    container.appendChild(cardElement);
-                });
-            } catch (error) {
-                console.error("Erro ao carregar vagas para gerenciar:", error);
-            } finally {
-                loading.style.display = 'none';
-            }
-        }
-
-        window.excluirVaga = async function(vagaId) {
-            if (!confirm('Tem certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.')) return;
-            try {
-                await deleteDoc(doc(db, 'vagas', vagaId));
-                mostrarAlerta('Vaga excluída com sucesso!', 'success');
-                carregarVagasParaGerenciar();
-                atualizarEstatisticas();
-            } catch (error) {
-                mostrarAlerta('Erro ao excluir a vaga.', 'error');
-            }
-        }
-        
-        window.marcarContratado = async function(candidatoId) {
-            if (!confirm('Tem certeza que deseja remover este candidato do banco de dados?')) return;
-            try {
-                await deleteDoc(doc(db, 'candidatos', candidatoId));
-                mostrarAlerta('Candidato removido com sucesso!', 'success');
-                document.querySelector(`.card[data-id="${candidatoId}"]`).remove();
-                incrementarContador('totalCandidatos', -1);
-            } catch(error) {
-                mostrarAlerta('Erro ao remover o candidato.', 'error');
-            }
-        }
-
-        window.abrirModalEdicaoVaga = async function(vagaId) {
-            const container = document.getElementById('conteudoModalEdicao');
-            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-            document.getElementById('modalEdicaoVaga').classList.add('show');
-            try {
-                const vagaRef = doc(db, 'vagas', vagaId);
-                const docSnap = await getDoc(vagaRef);
-                if (!docSnap.exists()) throw new Error('Vaga não encontrada');
-                const vaga = docSnap.data();
-                container.innerHTML = `
-                    <form id="formEditarVaga">
-                        <div class="form-row">
-                            <div class="form-group"><label for="editTitulo"><i class="fas fa-briefcase"></i> Título *</label><input type="text" id="editTitulo" name="titulo" value="${vaga.titulo}" required></div>
-                            <div class="form-group"><label for="editCidade"><i class="fas fa-map-marker-alt"></i> Cidade *</label><input type="text" id="editCidade" name="cidade" value="${vaga.cidade}" required></div>
-                        </div>
-                        <div class="form-group"><label for="editAtiva" style="display:flex; align-items:center; gap:0.5rem;"><input type="checkbox" id="editAtiva" name="ativa" ${vaga.ativa ? 'checked' : ''}> Vaga Ativa</label></div>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Alterações</button>
-                    </form>
-                `;
-                document.getElementById('formEditarVaga').addEventListener('submit', (e) => salvarEdicaoVaga(e, vagaId));
-            } catch (error) {
-                mostrarAlerta('Não foi possível carregar os dados da vaga.', 'error');
-                fecharModalEdicao();
-            }
-        }
-
-        async function salvarEdicaoVaga(event, vagaId) {
-            event.preventDefault();
-            const form = event.target;
-            const submitButton = form.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-            try {
-                const vagaData = {
-                    titulo: form.titulo.value,
-                    cidade: form.cidade.value,
-                    ativa: form.ativa.checked,
-                };
-                await updateDoc(doc(db, 'vagas', vagaId), vagaData);
-                mostrarAlerta('Vaga atualizada com sucesso!');
-                fecharModalEdicao();
-                carregarVagasParaGerenciar();
-                atualizarEstatisticas();
-            } catch (error) {
-                mostrarAlerta('Erro ao salvar as alterações.', 'error');
-            } finally {
-                submitButton.disabled = false;
-                submitButton.innerHTML = '<i class="fas fa-save"></i> Salvar Alterações';
-            }
-        }
-        
-        window.fecharModalEdicao = () => document.getElementById('modalEdicaoVaga').classList.remove('show');
-        window.fecharModal = () => document.getElementById('modalCandidato').classList.remove('show');
-
-        // ===================================================================
-        // MODAIS E DETALHES
-        // ===================================================================
-        window.verDetalhes = async function(event, candidatoId) {
-            const button = event.target.closest('button');
-            const originalText = button.innerHTML;
-            button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
-            try {
-                const docSnap = await getDoc(doc(db, "candidatos", candidatoId));
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    document.getElementById('conteudoModal').innerHTML = `
-                        <h2><i class="fas fa-user-circle"></i> ${data.nome}</h2>
-                        <div class="card-info" style="margin-top:1.5rem;">
-                            <div class="info-item"><i class="fas fa-phone"></i><span class="info-label">Telefone:</span><span class="info-value">${data.telefone}</span></div>
-                            <div class="info-item"><i class="fas fa-envelope"></i><span class="info-label">Email:</span><span class="info-value">${data.email || 'N/A'}</span></div>
-                            <div class="info-item"><i class="fas fa-map-marker-alt"></i><span class="info-label">Cidade:</span><span class="info-value">${data.cidade}</span></div>
-                            <div class="info-item"><i class="fas fa-briefcase"></i><span class="info-label">Cargo Desejado:</span><span class="info-value">${data.cargo_desejado}</span></div>
-                            <div class="info-item"><i class="fas fa-clock"></i><span class="info-label">Experiência:</span><span class="info-value">${data.experiencia_anos ?? '0'} anos</span></div>
-                            <div class="info-item"><i class="fas fa-calendar-check"></i><span class="info-label">Disponibilidade:</span><span class="info-value">${data.disponibilidade || 'N/A'}</span></div>
-                            <div class="info-item"><i class="fas fa-tags"></i><span class="info-label">Habilidades:</span><span class="info-value">${Array.isArray(data.skills) ? data.skills.join(', ') : data.skills || 'N/A'}</span></div>
-                        </div>
-                        ${data.observacoes ? `<div style="margin-top:1rem;"><h4 style="margin-bottom:0.5rem;">Observações:</h4><p style="background:var(--gray-50); padding:1rem; border-radius:var(--border-radius);">${data.observacoes}</p></div>` : ''}
-                    `;
-                    document.getElementById('modalCandidato').classList.add('show');
-                } else { throw new Error("Candidato não encontrado"); }
-            } catch (error) {
-                mostrarAlerta('Erro ao carregar detalhes do candidato.', 'error');
-            } finally {
-                button.disabled = false;
-                button.innerHTML = originalText;
-            }
-        }
-
-        // ===================================================================
-        // INICIALIZAÇÃO
-        // ===================================================================
-        async function atualizarEstatisticas() {
-            try {
-                const candidatosSnap = await getDocs(collection(db, 'candidatos'));
-                const vagasSnap = await getDocs(query(collection(db, 'vagas'), where('ativa', '==', true)));
-                
-                document.getElementById('totalCandidatos').textContent = candidatosSnap.size;
-                document.getElementById('totalVagas').textContent = vagasSnap.size;
-
-                const hoje = new Date();
-                hoje.setHours(0, 0, 0, 0); 
-                const qHoje = query(collection(db, 'candidatos'), where('data_cadastro', '>=', Timestamp.fromDate(hoje)));
-                const hojeSnap = await getDocs(qHoje);
-                document.getElementById('candidatosHoje').textContent = hojeSnap.size;
-            } catch (error) {
-                console.error('Erro ao atualizar estatísticas:', error);
-            }
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            atualizarEstatisticas();
-            showTab('candidatos', document.querySelector('.tab-button'));
-        });
     </script>
 </body>
 </html>
