@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orgânica Delivery | Links</title>
     
-    <!-- Google Fonts -->
+    <link rel="icon" type="image/png" href="https://i.ibb.co/YBbv2Gsj/image.png">
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
-    <!-- Meta Pixel Code -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TH8TBRML');</script>
     <script>
         !function(f,b,e,v,n,t,s)
         {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -21,25 +26,12 @@
         fbq('init', '856953836807238');
         fbq('track', 'PageView');
     </script>
-    <!-- End Meta Pixel Code -->
-
-    <!-- SCRIPT DO GTM -->
-    <!-- (Substitua GTM-XXXXXXX pelo seu ID quando for configurar o container) -->
-    <!--
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
-    -->
-
     <style>
-        /* Paleta de Cores Extraída da Identidade Visual */
+        /* Paleta de Cores Identidade Visual */
         :root {
-            --bg-color: #94a78a; 
+            --bg-color: #94a78a; /* Verde Sálvia do Fundo */
             --text-color: #ffffff;
-            --primary-color: #2b3b2b; 
-            --card-overlay: rgba(43, 59, 43, 0.7); 
+            --primary-color: #2b3b2b; /* Verde Escuro da Marca */
         }
 
         * {
@@ -111,7 +103,7 @@
             gap: 16px;
         }
 
-        /* Estilo Base dos Cards */
+        /* Estilo dos Cards */
         .card {
             position: relative;
             display: flex;
@@ -132,7 +124,7 @@
             transform: scale(0.98);
         }
 
-        /* Imagens de fundo dos cards (Atualizadas) */
+        /* Imagens de fundo das capas definitivas */
         .card-bg {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -148,7 +140,6 @@
         .overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            /* Leve ajuste no gradiente para garantir que as novas artes não fiquem apagadas */
             background: linear-gradient(to top, rgba(15, 20, 15, 0.95) 0%, rgba(15, 20, 15, 0.1) 100%);
             z-index: 2;
         }
@@ -193,17 +184,11 @@
     </style>
 </head>
 <body>
-
-    <!-- NOSCRIPT META PIXEL -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TH8TBRML"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=856953836807238&ev=PageView&noscript=1"
     /></noscript>
-
-    <!-- NOSCRIPT DO GTM -->
-    <!--
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    -->
 
     <div class="profile-section">
         <div class="profile-img-container">
@@ -215,7 +200,6 @@
 
     <div class="links-container">
         
-        <!-- CARD 1: YOUTUBE -->
         <a href="https://www.youtube.com/@organica.delivery" class="card" target="_blank" onclick="trackClick('clique_youtube')">
             <div class="card-bg bg-1"></div>
             <div class="overlay"></div>
@@ -226,7 +210,6 @@
             </div>
         </a>
 
-        <!-- CARD 2: FORMULÁRIO -->
         <a href="https://form.respondi.app/Rxu39nGk" class="card" target="_blank" onclick="trackClick('clique_formulario')">
             <div class="card-bg bg-2"></div>
             <div class="overlay"></div>
@@ -237,7 +220,6 @@
             </div>
         </a>
 
-        <!-- CARD 3: WHATSAPP -->
         <a href="https://wa.me/554388278661?text=Ol%C3%A1%2C%20vim%20pelo%20link%20da%20bio%20e%20gostaria%20de%20falar%20com%20a%20equipe!" class="card" target="_blank" onclick="trackClick('clique_whatsapp')">
             <div class="card-bg bg-3"></div>
             <div class="overlay"></div>
@@ -252,18 +234,18 @@
 
     <script>
         function trackClick(nomeDoEvento) {
-            // Dispara para o GTM
+            // 1. Envia para o dataLayer do Google Tag Manager
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
                 'event': nomeDoEvento
             });
             
-            // Dispara evento customizado para o Pixel da Meta
+            // 2. Envia como evento customizado para o Meta Pixel
             if (typeof fbq === 'function') {
                 fbq('trackCustom', nomeDoEvento);
             }
 
-            console.log("Evento disparado no DataLayer e Meta Pixel: " + nomeDoEvento);
+            console.log("Rastreamento Rocket executado para: " + nomeDoEvento);
         }
     </script>
 </body>
