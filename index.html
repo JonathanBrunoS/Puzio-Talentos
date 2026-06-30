@@ -2,14 +2,15 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-width=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orgânica Delivery | Links</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
-    <!-- COLOQUE O SEU SCRIPT DO GTM AQUI DENTRO DO HEAD -->
-    <!-- Exemplo:
+    <!-- SCRIPT DO GTM AQUI DENTRO DO HEAD -->
+    <!-- Substituir GTM-XXXXXXX pelo ID do cliente -->
+    <!--
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -18,12 +19,12 @@
     -->
 
     <style>
-        /* Variáveis de Cores (Fácil de alterar para a identidade visual do cliente) */
+        /* Paleta de Cores Extraída da Identidade Visual */
         :root {
-            --bg-color: #0f1115; /* Fundo escuro */
+            --bg-color: #94a78a; /* Verde Sálvia do Fundo */
             --text-color: #ffffff;
-            --primary-color: #2ECC71; /* Verde Orgânico - Altere para a cor exata da logo */
-            --card-overlay: rgba(0, 0, 0, 0.6); /* Escurece a imagem de fundo do card */
+            --primary-color: #2b3b2b; /* Verde Escuro da Logo */
+            --card-overlay: rgba(43, 59, 43, 0.7); /* Overlay escuro usando a cor da marca */
         }
 
         * {
@@ -35,7 +36,7 @@
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--primary-color);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -43,33 +44,48 @@
             padding: 40px 20px;
         }
 
-        /* Cabeçalho do Perfil */
+        /* Cabeçalho do Perfil - Ajustado para Mobile */
         .profile-section {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Correção da Logo */
+        .profile-img-container {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 15px auto;
+            border-radius: 50%;
+            background-color: var(--primary-color); /* Fundo igual ao da logo para não dar contraste nos cantos */
+            border: 3px solid #ffffff;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .profile-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 3px solid var(--primary-color);
-            object-fit: cover;
-            margin-bottom: 15px;
-            /* AQUI VOCÊ COLOCA A URL DA LOGO */
-            content: url('https://i.ibb.co/YBbv2Gsj/image.png'); 
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Garante que a logo inteira apareça sem cortes */
+            transform: scale(1.1); /* Dá um leve zoom para tirar bordas indesejadas, ajuste se necessário */
         }
 
         .profile-title {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 900;
             letter-spacing: -0.5px;
+            color: #ffffff;
         }
 
         .profile-subtitle {
             font-size: 0.9rem;
-            color: #a0a0a0;
-            margin-top: 5px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: 8px;
+            line-height: 1.4;
         }
 
         /* Container dos Cards */
@@ -78,10 +94,10 @@
             max-width: 500px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
-        /* Estilo dos Cards */
+        /* Estilo Base dos Cards */
         .card {
             position: relative;
             display: flex;
@@ -89,25 +105,20 @@
             justify-content: flex-end;
             text-decoration: none;
             color: white;
-            height: 160px;
+            height: 140px; /* Altura levemente reduzida para caber melhor na primeira dobra do mobile */
             border-radius: 16px;
             padding: 20px;
             overflow: hidden;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
+            border: 2px solid var(--primary-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(46, 204, 113, 0.2);
+        .card:active {
+            transform: scale(0.98);
         }
 
-        /* Borda customizada por card (seguindo sua referência) */
-        .card-1 { border-color: var(--primary-color); }
-        .card-2 { border-color: #25D366; } /* Verde WhatsApp */
-        .card-3 { border-color: #EA1D2C; } /* Vermelho iFood, se houver */
-
-        /* Imagens de fundo dos cards */
+        /* Imagens de fundo dos cards - Substitua os links pelas imagens 1000x320 que você criar */
         .card-bg {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -116,15 +127,14 @@
             z-index: 1;
         }
 
-        /* Coloque as imagens de fundo de cada card aqui */
-        .bg-1 { background-image: url('https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=600&auto=format&fit=crop'); }
-        .bg-2 { background-image: url('https://images.unsplash.com/photo-1611262588024-d12430b98920?q=80&w=600&auto=format&fit=crop'); }
-        .bg-3 { background-image: url('https://images.unsplash.com/photo-1526367790999-0150786686a2?q=80&w=600&auto=format&fit=crop'); }
+        .bg-1 { background-image: url('URL_DA_SUA_IMAGEM_YOUTUBE_1000x320'); background-color: var(--primary-color); }
+        .bg-2 { background-image: url('URL_DA_SUA_IMAGEM_FORMULARO_1000x320'); background-color: var(--primary-color); }
+        .bg-3 { background-image: url('URL_DA_SUA_IMAGEM_WHATSAPP_1000x320'); background-color: var(--primary-color); }
 
         .overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 100%);
+            background: linear-gradient(to top, rgba(15, 20, 15, 0.95) 0%, rgba(15, 20, 15, 0.2) 100%);
             z-index: 2;
         }
 
@@ -134,85 +144,88 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            width: 100%;
         }
 
         .card-title {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: 900;
             text-transform: uppercase;
-            line-height: 1.1;
-            margin-bottom: 5px;
-            width: 80%;
+            line-height: 1.2;
+            margin-bottom: 4px;
         }
 
         .card-subtitle {
             font-size: 0.75rem;
-            color: #d1d1d1;
-            margin-bottom: 15px;
-            max-width: 70%;
+            color: #e0e0e0;
+            margin-bottom: 12px;
         }
 
         .btn-acessar {
             align-self: flex-end;
-            background-color: var(--primary-color);
-            color: #fff;
-            padding: 8px 20px;
+            background-color: #ffffff;
+            color: var(--primary-color);
+            padding: 6px 16px;
             border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
+            font-size: 0.8rem;
+            font-weight: 900;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            text-transform: uppercase;
         }
-
-        /* Variações de cor dos botões */
-        .btn-wpp { background-color: #25D366; color: #000; }
-        .btn-ifood { background-color: #EA1D2C; }
         
     </style>
 </head>
 <body>
 
-    <!-- COLOQUE O NOSCRIPT DO GTM AQUI LOGO APÓS ABRIR O BODY -->
+    <!-- NOSCRIPT DO GTM -->
+    <!--
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    -->
 
     <div class="profile-section">
-        <img src="" alt="Logo Orgânica Delivery" class="profile-img">
-        <h1 class="profile-title">Orgânica Delivery</h1>
-        <p class="profile-subtitle">O melhor delivery saudável da região 🍃</p>
+        <div class="profile-img-container">
+            <!-- URL da logo fornecida -->
+            <img src="https://i.ibb.co/YBbv2Gsj/image.png" alt="Logo Orgânica Delivery" class="profile-img">
+        </div>
+        <h1 class="profile-title">@organica.delivery_</h1>
+        <p class="profile-subtitle">Empresa focada em ajudar seu delivery a crescer de forma consistente e com método definido de qualquer lugar do Brasil</p>
     </div>
 
     <div class="links-container">
         
-        <!-- CARD 1: CARDÁPIO PRÓPRIO -->
-        <a href="LINK_DO_CARDAPIO_AQUI" class="card card-1" target="_blank" onclick="trackClick('clique_cardapio_proprio')">
+        <!-- CARD 1: YOUTUBE -->
+        <a href="https://www.youtube.com/@organica.delivery" class="card" target="_blank" onclick="trackClick('clique_youtube')">
             <div class="card-bg bg-1"></div>
             <div class="overlay"></div>
             <div class="card-content">
-                <h2 class="card-title">Faça seu Pedido</h2>
-                <p class="card-subtitle">Acesse nosso cardápio digital e ganhe descontos exclusivos.</p>
+                <h2 class="card-title">Canal no YouTube</h2>
+                <p class="card-subtitle">Acompanhe nossos conteúdos</p>
                 <div class="btn-acessar">Acessar &rarr;</div>
             </div>
         </a>
 
-        <!-- CARD 2: WHATSAPP -->
-        <a href="LINK_DO_WHATSAPP_AQUI" class="card card-2" target="_blank" onclick="trackClick('clique_whatsapp')">
+        <!-- CARD 2: FORMULÁRIO -->
+        <a href="https://form.respondi.app/Rxu39nGk" class="card" target="_blank" onclick="trackClick('clique_formulario')">
             <div class="card-bg bg-2"></div>
             <div class="overlay"></div>
             <div class="card-content">
-                <h2 class="card-title">Fale Conosco</h2>
-                <p class="card-subtitle">Dúvidas ou pedidos grandes? Chame no WhatsApp.</p>
-                <div class="btn-acessar btn-wpp">Acessar &rarr;</div>
+                <h2 class="card-title">Pedir Orçamento</h2>
+                <p class="card-subtitle">Gestão de Delivery Completa</p>
+                <div class="btn-acessar">Acessar &rarr;</div>
             </div>
         </a>
 
-        <!-- CARD 3: IFOOD / OUTRO -->
-        <a href="LINK_3_AQUI" class="card card-3" target="_blank" onclick="trackClick('clique_ifood')">
+        <!-- CARD 3: WHATSAPP -->
+        <a href="https://wa.me/554388278661?text=Ol%C3%A1%2C%20vim%20pelo%20link%20da%20bio%20e%20gostaria%20de%20falar%20com%20a%20equipe!" class="card" target="_blank" onclick="trackClick('clique_whatsapp')">
             <div class="card-bg bg-3"></div>
             <div class="overlay"></div>
             <div class="card-content">
-                <h2 class="card-title">Estamos no iFood</h2>
-                <p class="card-subtitle">Peça também pelo aplicativo do iFood.</p>
-                <div class="btn-acessar btn-ifood">Acessar &rarr;</div>
+                <h2 class="card-title">Fale Conosco</h2>
+                <p class="card-subtitle">Atendimento via WhatsApp</p>
+                <div class="btn-acessar">Acessar &rarr;</div>
             </div>
         </a>
 
@@ -220,13 +233,12 @@
 
     <!-- Script de Rastreamento (Envia dados para o GTM) -->
     <script>
-        // Função para disparar eventos para o DataLayer do GTM
         function trackClick(nomeDoEvento) {
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
                 'event': nomeDoEvento
             });
-            console.log("Evento disparado para o GTM: " + nomeDoEvento);
+            console.log("Evento disparado no DataLayer: " + nomeDoEvento);
         }
     </script>
 </body>
