@@ -8,6 +8,31 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
+    <!-- Meta Pixel Code -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '856953836807238');
+        fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel Code -->
+
+    <!-- SCRIPT DO GTM -->
+    <!-- (Substitua GTM-XXXXXXX pelo seu ID quando for configurar o container) -->
+    <!--
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+    -->
+
     <style>
         /* Paleta de Cores Extraída da Identidade Visual */
         :root {
@@ -107,7 +132,7 @@
             transform: scale(0.98);
         }
 
-        /* Imagens de fundo dos cards */
+        /* Imagens de fundo dos cards (Atualizadas) */
         .card-bg {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -116,15 +141,15 @@
             z-index: 1;
         }
 
-        /* IMAGEM DO YOUTUBE INSERIDA AQUI */
-        .bg-1 { background-image: url('https://i.ibb.co/k6SqFVVz/Design-sem-nome-2.png'); background-color: var(--primary-color); }
-        .bg-2 { background-image: url('URL_DA_SUA_IMAGEM_FORMULARO_1000x320'); background-color: var(--primary-color); }
-        .bg-3 { background-image: url('URL_DA_SUA_IMAGEM_WHATSAPP_1000x320'); background-color: var(--primary-color); }
+        .bg-1 { background-image: url('https://i.ibb.co/pjSPQf1P/capa-youtube.png'); background-color: var(--primary-color); }
+        .bg-2 { background-image: url('https://i.ibb.co/j9LWYC1P/gest-o-ifood.png'); background-color: var(--primary-color); }
+        .bg-3 { background-image: url('https://i.ibb.co/nMzjwprD/chamar-no-whatsapp.png'); background-color: var(--primary-color); }
 
         .overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to top, rgba(15, 20, 15, 0.95) 0%, rgba(15, 20, 15, 0.2) 100%);
+            /* Leve ajuste no gradiente para garantir que as novas artes não fiquem apagadas */
+            background: linear-gradient(to top, rgba(15, 20, 15, 0.95) 0%, rgba(15, 20, 15, 0.1) 100%);
             z-index: 2;
         }
 
@@ -168,6 +193,17 @@
     </style>
 </head>
 <body>
+
+    <!-- NOSCRIPT META PIXEL -->
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=856953836807238&ev=PageView&noscript=1"
+    /></noscript>
+
+    <!-- NOSCRIPT DO GTM -->
+    <!--
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    -->
 
     <div class="profile-section">
         <div class="profile-img-container">
@@ -216,11 +252,18 @@
 
     <script>
         function trackClick(nomeDoEvento) {
+            // Dispara para o GTM
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
                 'event': nomeDoEvento
             });
-            console.log("Evento disparado no DataLayer: " + nomeDoEvento);
+            
+            // Dispara evento customizado para o Pixel da Meta
+            if (typeof fbq === 'function') {
+                fbq('trackCustom', nomeDoEvento);
+            }
+
+            console.log("Evento disparado no DataLayer e Meta Pixel: " + nomeDoEvento);
         }
     </script>
 </body>
